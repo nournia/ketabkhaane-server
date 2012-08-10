@@ -1,5 +1,9 @@
 <?php require('begin.php') ?>
 <?php
-	echo "Reghaabat backend!";
+	// Register
+	
+
+	// Receive
+
 ?>
 <?php require('end.php') ?>

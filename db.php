@@ -8,7 +8,6 @@ $commands = array(
 'create table reghaabats (
 	id integer not null primary key auto_increment,
 	title varchar(255) not null,
-	address varchar(1000) default null,
 	description varchar(1000) null default null,
 	synced_at timestamp null default null,
 	license varchar(255) null default null)',
