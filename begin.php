@@ -1,16 +1,10 @@
 <?php
-function connectDatabase() {
-	$services_json = json_decode(getenv("VCAP_SERVICES"),true);
-	$mysql_config = $services_json["mysql-5.1"][0]["credentials"];
+function connectDatabase($settings) {
+	$env = json_decode($settings, true);
+	$config = $env["mysql-5.1"][0]["credentials"];
 
-	$username = $mysql_config["username"];
-	$password = $mysql_config["password"];
-	$hostname = $mysql_config["hostname"];
-	$port = $mysql_config["port"];
-	$db = $mysql_config["name"];
-
-	$link = mysql_connect("$hostname:$port", $username, $password);
-	$db_selected = mysql_select_db($db, $link);
+	$link = mysql_connect("{$config['hostname']}:{$config["port"]}", $config["username"], $config["password"]);
+	$db_selected = mysql_select_db($config["name"], $link);
 	if (! $db_selected) die("Db Connection Error.");
 }
 
@@ -19,6 +13,10 @@ function disconnectDatabase() {
 	if (isset($connection))
 		mysql_close($connection);
 }
-?>
 
-<?php connectDatabase(); ?>
+// connect db
+$settings = getenv("VCAP_SERVICES");
+// $settings = '{"mysql-5.1": [{"credentials": {"hostname": "localhost", "name": "reghaabat-db", "port": "3306", "username": "root", "password": ""}}]}';
+
+connectDatabase($settings);
+?>
