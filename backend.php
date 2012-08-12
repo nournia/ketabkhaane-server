@@ -8,7 +8,7 @@
 	}
 
 	// Register
-	if (isset($_POST['register'])) {
+	if (isset($_POST['command']) and $_POST['command'] == 'register') {
 		mysql_query('insert into reghaabats (title) values ("")');
 		$id = mysql_insert_id();
 		$license = updateLicense($id);
