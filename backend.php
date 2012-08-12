@@ -3,7 +3,8 @@
 	function updateLicense($id) {
 		$days = 100;
 		mysql_query("update reghaabats set license = sha1(adddate(now(), $days)) where id = $id");
-		return mysql_fetch_row(mysql_query("select license from reghaabats where id = $id"))[0];
+		$row = mysql_fetch_row(mysql_query("select license from reghaabats where id = $id"));
+		return $row[0];
 	}
 
 	// Register
