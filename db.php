@@ -21,9 +21,9 @@ $creates = array(
 	table_name enum("users", "accounts", "permissions", "authors", "publications", "files", "matches", "questions", "answers", "library", "supports", "scores", "transactions", "open_categories", "open_scores", "roots", "branches", "objects", "borrows") not null,
 	operation enum("insert","update", "delete") not null,
 	row_id integer not null,
+	row_data text null,
 	user_id integer null default null,
-	created_at timestamp null default null,
-	row_data text null) engine=MyISAM'
+	created_at timestamp null default null) engine=MyISAM'
 );
 $table_conf = ' collate=utf8_general_ci';
 

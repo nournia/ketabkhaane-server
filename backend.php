@@ -29,19 +29,25 @@
 	if ($_POST['command'] == 'receive' && isset($_POST['id']) && isset($_POST['key'])) {
 		$reghaabat_id = $_POST['id'];
 		// todo: check for valid key
-
 		$logs = explode('|-|', $_POST['logs']);
+
+		$query = 'insert into logs values ';
+		$first = true;
 		if (count($logs) == $_POST['count']) {
 			foreach($logs as $row) {
 				$row = parseRow($row);
-				$row[5] = mysql_real_escape_string($row[5]);
-				mysql_query("insert into logs values({$reghaabat_id}, '{$row[0]}', '{$row[1]}', {$row[2]}, {$row[3]}, '{$row[4]}', '{$row[5]}')");
+				if (!$first) $query .= ','; else $first = false;
+				if ($row[5] != '') $text = "'{$row[5]}'"; else $text = 'null';
+				if ($row[3] != '') $user = $row[3]; else $user = 'null';
+				$query .= "({$reghaabat_id},'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
 			}
 
-			echo 'ok - '. $_POST['synced_at'];
+			if (mysql_query($query))
+				echo 'ok - '. $_POST['synced_at'];
+			else
+				echo 'error - '. mysql_error();
 		} else
 			echo 'error - '. count($logs) .' rows was sent but '. $_POST['count'] .' was received';
 	}
-
 ?>
 <?php require('end.php') ?>
