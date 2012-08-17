@@ -6,6 +6,11 @@
 		$row = mysql_fetch_row(mysql_query("select license from reghaabats where id = $id"));
 		return $row[0];
 	}
+	function raiseError($msg) {
+		echo 'error - '. $msg;
+		require('end.php');
+		die;
+	}
 
 	if (!isset($_POST['command']))
 		$_POST['command'] = '';
@@ -27,8 +32,21 @@
 	}
 
 	if ($_POST['command'] == 'receive' && isset($_POST['id']) && isset($_POST['key'])) {
-		$reghaabat_id = $_POST['id'];
-		// todo: check for valid key
+		// check for valid client
+		$reghaabat_id = mysql_real_escape_string($_POST['id']);
+		$result = mysql_query("select license from reghaabats where id = $reghaabat_id");
+		if ($result) {
+			$row = mysql_fetch_row($result);
+			$license = $row[0];
+
+			if(sha1($reghaabat_id .'|x|'. $license) == $_POST['key'])
+				$valid_user = true;
+		}
+
+		if (!isset($valid_user))
+			raiseError('not a valid client');
+
+		// insert data into db
 		$logs = explode('|-|', $_POST['logs']);
 
 		$query = 'insert into logs values ';
@@ -39,15 +57,17 @@
 				if (!$first) $query .= ','; else $first = false;
 				if ($row[5] != '') $text = "'{$row[5]}'"; else $text = 'null';
 				if ($row[3] != '') $user = $row[3]; else $user = 'null';
-				$query .= "({$reghaabat_id},'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
+				$query .= "($reghaabat_id,'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
 			}
 
-			if (mysql_query($query))
-				echo 'ok - '. $_POST['synced_at'];
-			else
-				echo 'error - '. mysql_error();
+			if (mysql_query($query)) {
+				$synced_at = $_POST['synced_at'];
+				mysql_query("update reghaabats set synced_at = '$synced_at' where id = $reghaabat_id");
+				echo 'ok - '. $synced_at;
+			} else
+				raiseError(mysql_error());
 		} else
-			echo 'error - '. count($logs) .' rows was sent but '. $_POST['count'] .' was received';
+			raiseError(count($logs) .' rows was sent but '. $_POST['count'] .' was received');
 	}
 ?>
 <?php require('end.php') ?>
