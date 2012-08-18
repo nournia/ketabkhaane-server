@@ -1,8 +1,6 @@
 <?php require('begin.php') ?>
-<?php
-
-if (isset($_GET['rebuild'])) {
-
+<?php 
+// commands
 $commands = array(
 'drop table if exists reghaabats',
 'drop table if exists logs'
@@ -25,15 +23,26 @@ $creates = array(
 	user_id integer null default null,
 	created_at timestamp null default null) engine=MyISAM'
 );
-$table_conf = ' collate=utf8_general_ci';
+ ?>
+<?php
+if (isset($_GET['rebuild'])) {
 
-foreach ($creates as $command)
-	$commands[] = $command . $table_conf;
+	// execute sql commands
+	$table_conf = ' collate=utf8_general_ci';
+	foreach ($creates as $command)
+		$commands[] = $command . $table_conf;
 
-foreach ($commands as $command)
-	mysql_query($command);
+	foreach ($commands as $command)
+		mysql_query($command);
 
-echo 'Database Rebuilt.';
+	echo 'Database Rebuilt <br>';
+
+	// create files directory
+	$fileDir = $_SERVER['DOCUMENT_ROOT'] .'files/';
+	if (!file_exists($fileDir))
+		mkdir($fileDir);
+	if (file_exists($fileDir))
+		echo 'Files Directory: '. $fileDir;
 }
 
 if (isset($_GET['stats'])) {

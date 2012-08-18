@@ -46,28 +46,36 @@
 		if (!isset($valid_user))
 			raiseError('not a valid client');
 
-		// insert data into db
+		// extract records
 		$logs = explode('|-|', $_POST['logs']);
 
+		if (count($logs) != $_POST['count'])
+			raiseError(count($logs) .' rows was sent but '. $_POST['count'] .' was received');
+
+		// insert data into db
 		$query = 'insert into logs values ';
 		$first = true;
-		if (count($logs) == $_POST['count']) {
-			foreach($logs as $row) {
-				$row = parseRow($row);
-				if (!$first) $query .= ','; else $first = false;
-				if ($row[5] != '') $text = "'". str_replace("'", '"', $row[5]) ."'"; else $text = 'null';
-				if ($row[3] != '') $user = $row[3]; else $user = 'null';
-				$query .= "($reghaabat_id,'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
-			}
+		foreach($logs as $row) {
+			$row = parseRow($row);
+			if (!$first) $query .= ','; else $first = false;
+			if ($row[5] != '') $text = "'". str_replace("'", '"', $row[5]) ."'"; else $text = 'null';
+			if ($row[3] != '') $user = $row[3]; else $user = 'null';
+			$query .= "($reghaabat_id,'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
+		}
+		if (!mysql_query($query))
+			raiseError(mysql_error());
 
-			if (mysql_query($query)) {
-				$synced_at = $_POST['synced_at'];
-				mysql_query("update reghaabats set synced_at = '$synced_at' where id = $reghaabat_id");
-				echo 'ok - '. $synced_at;
-			} else
-				raiseError(mysql_error());
-		} else
-			raiseError(count($logs) .' rows was sent but '. $_POST['count'] .' was received');
+		// copy files into directory
+		if (count($_FILES) > 0) {
+			$fileDir = $_SERVER['DOCUMENT_ROOT'] .'files/';
+			foreach ($_FILES as $file)
+				move_uploaded_file($file['tmp_name'], $fileDir . $reghaabat_id .'-'. $file['name']);
+		}
+
+		// update reghaabat synced_at
+		$synced_at = $_POST['synced_at'];
+		mysql_query("update reghaabats set synced_at = '$synced_at' where id = $reghaabat_id");
+		echo 'ok - '. $synced_at;
 	}
 ?>
 <?php require('end.php') ?>
