@@ -67,7 +67,6 @@
 
 		// copy files into directory
 		if (count($_FILES) > 0) {
-			$fileDir = $_SERVER['DOCUMENT_ROOT'] .'files/';
 			foreach ($_FILES as $file)
 				move_uploaded_file($file['tmp_name'], $fileDir . $reghaabat_id .'-'. $file['name']);
 		}

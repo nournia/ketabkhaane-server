@@ -38,11 +38,12 @@ if (isset($_GET['rebuild'])) {
 	echo 'Database Rebuilt <br>';
 
 	// create files directory
-	$fileDir = $_SERVER['DOCUMENT_ROOT'] .'files/';
-	if (!file_exists($fileDir))
+	echo 'Files Directory: '. $fileDir;
+	if (!file_exists($fileDir)) {
 		mkdir($fileDir);
-	if (file_exists($fileDir))
-		echo 'Files Directory: '. $fileDir;
+		if (file_exists($fileDir))
+			echo ' +created';
+	}
 }
 
 if (isset($_GET['stats'])) {
