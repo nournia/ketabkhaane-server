@@ -36,8 +36,10 @@ foreach ($commands as $command)
 echo 'Database Rebuilt.';
 }
 
-$result = mysql_query('select count(row_id) from logs');
-$row = mysql_fetch_row($result);
-echo $row[0]. ' records received.'
+if (isset($_GET['stats'])) {
+	$result = mysql_query('select count(row_id) from logs');
+	$row = mysql_fetch_row($result);
+	echo $row[0]. ' records received.';
+}
 ?>
 <?php require('end.php') ?>
