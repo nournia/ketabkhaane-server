@@ -55,7 +55,7 @@
 			foreach($logs as $row) {
 				$row = parseRow($row);
 				if (!$first) $query .= ','; else $first = false;
-				if ($row[5] != '') $text = "'{$row[5]}'"; else $text = 'null';
+				if ($row[5] != '') $text = "'". str_replace("'", '"', $row[5]) ."'"; else $text = 'null';
 				if ($row[3] != '') $user = $row[3]; else $user = 'null';
 				$query .= "($reghaabat_id,'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
 			}
