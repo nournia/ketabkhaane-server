@@ -6,34 +6,39 @@
 		$row = mysql_fetch_row(mysql_query("select license from reghaabats where id = $id"));
 		return $row[0];
 	}
-	function showMessage($type, $msg) {
-		echo "$type - $msg";
-		require('end.php');
-		die;
-	}
-
-	if (!isset($_POST['command']))
-		$_POST['command'] = '';
-
-	// Register
-	if ($_POST['command'] == 'register') {
-		mysql_query('insert into reghaabats (title) values ("")');
-		$id = mysql_insert_id();
-		$license = updateLicense($id);
-		showMessage('registered', $id .' - '. $license);
-	}
-
-	// Store
 	function parseRow($data) {
 		$content = strpos($data, '|');
 		$values = explode(',', substr($data, 0, $content-1));
 		$values[] = substr($data, $content+1);
 		return $values;
 	}
+	function response($state, $data) {
+		$data['command'] = $_POST['command'];
+		$data['state'] = $state;
+		echo json_encode($data);
+		require('end.php'); die;
+	}
+	function returnError($message) {
+		response('error', array('message' => $message));
+	}
+	function returnData($data) {
+		response('ok', $data);
+	}
 
-	if ($_POST['command'] == 'store' && isset($_POST['id']) && isset($_POST['key'])) {
-		// check for valid client
-		$reghaabat_id = mysql_real_escape_string($_POST['id']);
+	// check arguments
+	if (!(isset($_POST['command']) && isset($_POST['id']) && isset($_POST['key']))) {
+		require('end.php'); die;		
+	}
+	$reghaabat_id = mysql_real_escape_string($_POST['id']);
+		
+	// authentication
+	if ($_POST['command'] == 'register') {
+		mysql_query('insert into reghaabats (title) values ("")');
+		$id = mysql_insert_id();
+		$license = updateLicense($id);
+		response('ok', array('id' => $id, 'license' => $license));
+	}
+	else  {
 		$result = mysql_query("select license from reghaabats where id = $reghaabat_id");
 		if ($result) {
 			$row = mysql_fetch_row($result);
@@ -44,13 +49,25 @@
 		}
 
 		if (!isset($valid_user))
-			showMessage('error', 'not a valid client');
+			returnError('Authentication Failed.');
+	}
 
+	// query data
+	if ($_POST['command'] == 'query') {
+		if ($_POST['query'] == 'synced_at') {
+			$row = mysql_fetch_row(mysql_query("select synced_at from reghaabats where id = $reghaabat_id"));
+			returnData(array('synced_at' => $row[0]));
+		}
+	}
+
+	// store
+	if ($_POST['command'] == 'store') {
 		// extract records
 		$logs = explode('|-|', $_POST['logs']);
 
+		// data validation
 		if (count($logs) != $_POST['count'])
-			showMessage('error', count($logs) .' rows was sent but '. $_POST['count'] .' was received');
+			returnError(count($logs) .' rows was sent but '. $_POST['count'] .' was received');
 
 		// insert data into db
 		$query = 'insert into logs values ';
@@ -63,7 +80,7 @@
 			$query .= "($reghaabat_id,'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
 		}
 		if (!mysql_query($query))
-			showMessage('error', mysql_error());
+			returnError(mysql_error());
 
 		// copy files into directory
 		if (count($_FILES) > 0) {
@@ -74,7 +91,7 @@
 		// update reghaabat synced_at
 		$synced_at = $_POST['synced_at'];
 		mysql_query("update reghaabats set synced_at = '$synced_at' where id = $reghaabat_id");
-		showMessage('ok', $synced_at);
+		returnData(array('synced_at' => $synced_at));
 	}
-?>
-<?php require('end.php') ?>
+
+	returnError('Invalid Command.');
