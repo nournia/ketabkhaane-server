@@ -69,18 +69,20 @@
 		if (count($logs) != $_POST['count'])
 			returnError(count($logs) .' rows was sent but '. $_POST['count'] .' was received');
 
-		// insert data into db
-		$query = 'insert into logs values ';
-		$first = true;
-		foreach($logs as $row) {
-			$row = parseRow($row);
-			if (!$first) $query .= ','; else $first = false;
-			if ($row[5] != '') $text = "'". str_replace("'", '"', $row[5]) ."'"; else $text = 'null';
-			if ($row[3] != '') $user = $row[3]; else $user = 'null';
-			$query .= "($reghaabat_id,'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
+		// insert data into db in groups
+		foreach (array_chunk($logs, 2500) as $rows) {
+			$first = true;
+			$query = 'insert into logs values ';
+			foreach ($rows as $row) {
+				$row = parseRow($row);
+				if (!$first) $query .= ','; else $first = false;
+				if ($row[5] != '') $text = "'". str_replace("'", '"', $row[5]) ."'"; else $text = 'null';
+				if ($row[3] != '') $user = $row[3]; else $user = 'null';
+				$query .= "($reghaabat_id,'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
+			}
+			if (!mysql_query($query))
+				returnError(mysql_error());
 		}
-		if (!mysql_query($query))
-			returnError(mysql_error());
 
 		// copy files into directory
 		if (count($_FILES) > 0) {
