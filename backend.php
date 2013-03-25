@@ -6,8 +6,8 @@
 		$row = mysql_fetch_row(mysql_query("select license from reghaabats where id = $id"));
 		return $row[0];
 	}
-	function raiseError($msg) {
-		echo 'error - '. $msg;
+	function showMessage($type, $msg) {
+		echo "$type - $msg";
 		require('end.php');
 		die;
 	}
@@ -20,10 +20,10 @@
 		mysql_query('insert into reghaabats (title) values ("")');
 		$id = mysql_insert_id();
 		$license = updateLicense($id);
-		echo 'ok - '. $id .' - '. $license;
+		showMessage('registered', $id .' - '. $license);
 	}
 
-	// Receive
+	// Store
 	function parseRow($data) {
 		$content = strpos($data, '|');
 		$values = explode(',', substr($data, 0, $content-1));
@@ -31,7 +31,7 @@
 		return $values;
 	}
 
-	if ($_POST['command'] == 'receive' && isset($_POST['id']) && isset($_POST['key'])) {
+	if ($_POST['command'] == 'store' && isset($_POST['id']) && isset($_POST['key'])) {
 		// check for valid client
 		$reghaabat_id = mysql_real_escape_string($_POST['id']);
 		$result = mysql_query("select license from reghaabats where id = $reghaabat_id");
@@ -44,13 +44,13 @@
 		}
 
 		if (!isset($valid_user))
-			raiseError('not a valid client');
+			showMessage('error', 'not a valid client');
 
 		// extract records
 		$logs = explode('|-|', $_POST['logs']);
 
 		if (count($logs) != $_POST['count'])
-			raiseError(count($logs) .' rows was sent but '. $_POST['count'] .' was received');
+			showMessage('error', count($logs) .' rows was sent but '. $_POST['count'] .' was received');
 
 		// insert data into db
 		$query = 'insert into logs values ';
@@ -63,7 +63,7 @@
 			$query .= "($reghaabat_id,'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
 		}
 		if (!mysql_query($query))
-			raiseError(mysql_error());
+			showMessage('error', mysql_error());
 
 		// copy files into directory
 		if (count($_FILES) > 0) {
@@ -74,7 +74,7 @@
 		// update reghaabat synced_at
 		$synced_at = $_POST['synced_at'];
 		mysql_query("update reghaabats set synced_at = '$synced_at' where id = $reghaabat_id");
-		echo 'ok - '. $synced_at;
+		showMessage('ok', $synced_at);
 	}
 ?>
 <?php require('end.php') ?>
