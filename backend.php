@@ -91,7 +91,7 @@
 		// update reghaabat synced_at
 		$synced_at = $_POST['synced_at'];
 		mysql_query("update reghaabats set synced_at = '$synced_at' where id = $reghaabat_id");
-		returnData(array('synced_at' => $synced_at));
+		returnData(array('synced_at' => $synced_at, 'count' => count($logs)));
 	}
 
 	returnError('Invalid Command.');
