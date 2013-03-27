@@ -3,8 +3,8 @@
 	$tables = array('ageclasses', 'categories', 'open_categories', 'types', 'accounts', 'roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'questions', 'files', 'logs', 'answers', 'borrows', 'open_scores', 'permissions', 'supports', 'transactions');
 	function updateLicense($id) {
 		$days = 100;
-		mysql_query("update reghaabats set license = sha1(adddate(now(), $days)) where id = $id");
-		$row = mysql_fetch_row(mysql_query("select license from reghaabats where id = $id"));
+		mysql_query("update libraries set license = sha1(adddate(now(), $days)) where id = $id");
+		$row = mysql_fetch_row(mysql_query("select license from libraries where id = $id"));
 		return $row[0];
 	}
 	function parseRow($data) {
@@ -40,13 +40,13 @@
 		
 	// authentication
 	if ($_POST['command'] == 'register') {
-		mysql_query('insert into reghaabats (title) values ("")');
+		mysql_query('insert into libraries (title) values ("")');
 		$id = mysql_insert_id();
 		$license = updateLicense($id);
 		response('ok', array('id' => $id, 'license' => $license));
 	}
 	else  {
-		$result = mysql_query("select license from reghaabats where id = $reghaabat_id");
+		$result = mysql_query("select license from libraries where id = $reghaabat_id");
 		if ($result) {
 			$row = mysql_fetch_row($result);
 			$license = $row[0];
@@ -62,7 +62,7 @@
 	// query data
 	if ($_POST['command'] == 'query') {
 		if ($_POST['query'] == 'synced_at') {
-			$row = mysql_fetch_row(mysql_query("select synced_at from reghaabats where id = $reghaabat_id"));
+			$row = mysql_fetch_row(mysql_query("select synced_at from libraries where id = $reghaabat_id"));
 			returnData(array('synced_at' => $row[0]));
 		}
 	}
@@ -133,7 +133,7 @@
 
 		// update reghaabat synced_at
 		$synced_at = $_POST['synced_at'];
-		mysql_query("update reghaabats set synced_at = '$synced_at' where id = $reghaabat_id");
+		mysql_query("update libraries set synced_at = '$synced_at' where id = $reghaabat_id");
 		returnData(array('synced_at' => $synced_at, 'count' => count($logs)));
 	}
 
