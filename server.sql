@@ -38,11 +38,13 @@ CREATE TABLE accounts (
 	cdfine integer not null -- daily
 );
 CREATE TABLE roots (
+	reghaabat_id integer not null,
 	id integer not null,
 	title varchar(255) not null,
 	type_id smallint not nulle
 );
 CREATE TABLE branches (
+	reghaabat_id integer not null,
 	id integer not null,
 	root_id integer not null,
 	title varchar(255) not null,
@@ -151,3 +153,11 @@ CREATE TABLE transactions (
 	created_at timestamp not null default current_timestamp,
 	description varchar(20) null -- fin: (fine of objects), dis (discount in fine), chg (money user charged to he's account), mid:match_id (score from match), pay (money payed to user for matches)
 );
+
+-- data
+
+insert into ageclasses values (0, 'الف', 'آمادگی و اول دبستان', 6, 7, 4), (1, 'ب', 'دوم و سوم دبستان', 8, 9, 4), (2, 'ج', 'چهارم و پنجم دبستان', 10, 11, 5), (3, 'د', 'راهنمایی', 12, 14, 6), (4, 'ه', 'دبیرستان', 15, 18, 7);
+insert into categories (id, title) values (0, 'نقاشی'), (1, 'رنگ‌آمیزی'), (2, 'تحقیق'), (3, 'آزمایش'), (4, 'کاردستی');
+insert into open_categories (id, title) values (0, 'خلاصه‌نویسی'), (1, 'شعر'), (2, 'داستان');
+insert into accounts (id, title, bookfine, cdfine) values (0, 'عادی', 50, 100), (1, 'ویژه', 25, 100);
+insert into types (id, title) values (0, 'کتاب'), (1, 'چند رسانه‌ای');

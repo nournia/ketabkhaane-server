@@ -1,5 +1,6 @@
 <?php require('begin.php') ?>
 <?php
+	$tables = array('ageclasses', 'categories', 'open_categories', 'types', 'accounts', 'roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'questions', 'files', 'logs', 'answers', 'borrows', 'open_scores', 'permissions', 'supports', 'transactions');
 	function updateLicense($id) {
 		$days = 100;
 		mysql_query("update reghaabats set license = sha1(adddate(now(), $days)) where id = $id");
@@ -11,6 +12,12 @@
 		$values = explode(',', substr($data, 0, $content-1));
 		$values[] = substr($data, $content+1);
 		return $values;
+	}
+	function getIds($values) {
+		$ids = array();
+		foreach($values as $value)
+			$ids[] = explode(',', $value)[1];
+		return join(',', $ids);
 	}
 	function response($state, $data) {
 		$data['command'] = $_POST['command'];
@@ -62,32 +69,55 @@
 
 	// store
 	if ($_POST['command'] == 'store') {
+
 		// extract records
-		$logs = explode('|-|', $_POST['logs']);
+		$logs = explode('|-|', $_POST['xlogs']);
 
 		// data validation
 		if (count($logs) != $_POST['count'])
-			returnError(count($logs) .' rows was sent but '. $_POST['count'] .' was received');
+			returnError($_POST['count'] .' rows was sent but '.  count($logs) .' was received');
+
+		// todo: write logs to file
 
 		// insert data into db in groups
-		foreach (array_chunk($logs, 2500) as $rows) {
-			$first = true;
-			$query = 'insert into logs values ';
-			foreach ($rows as $row) {
-				$row = parseRow($row);
-				if (!$first) $query .= ','; else $first = false;
-				if ($row[5] != '') $text = "'". str_replace("'", '"', $row[5]) ."'"; else $text = 'null';
-				if ($row[3] != '') $user = $row[3]; else $user = 'null';
-				$query .= "($reghaabat_id,'{$row[0]}','{$row[1]}',{$row[2]},$text,$user,'{$row[4]}')";
+		$command = ''; $table = ''; $values = array();
+		foreach ($logs as $row) {
+			$row = parseRow($row);
+			$value = "($reghaabat_id,{$row[2]},{$row[5]})";
+
+			if ($table == $row[0] && $command == $row[1] && count($values) < 100)
+				$values[] = $value;
+			else {
+				if (count($values) > 0 && in_array($table, $tables)) {
+					// update = delete + insert
+					if ($command == 'update') {
+						if (!mysql_query("delete from $table where id in (". getIds($values) .") and reghaabat_id = $reghaabat_id"))
+							returnError(mysql_error());
+						$command = 'insert';
+					}
+
+					$query = '';
+					if ($command == 'insert')
+						$query = "insert into $table values ". join(',', $values);
+					else if ($command == 'delete')
+						$query = "delete from $table where id in (". getIds($values) .") and reghaabat_id = $reghaabat_id";
+					else
+						returnData('Invalid Db Command');
+
+					if (!mysql_query($query))
+						returnError(mysql_error());
+				}
+
+				$command = $row[1];
+				$table = $row[0];
+				$values = array($value);
 			}
-			if (!mysql_query($query))
-				returnError(mysql_error());
 		}
 
 		// copy files into directory
 		if (count($_FILES) > 0) {
 			foreach ($_FILES as $file)
-				move_uploaded_file($file['tmp_name'], $fileDir . $reghaabat_id .'-'. $file['name']);
+				move_uploaded_file($file['tmp_name'], $filesDir . $reghaabat_id .'-'. $file['name']);
 		}
 
 		// update reghaabat synced_at
