@@ -45,10 +45,8 @@ if (isset($_GET['rebuild'])) {
 	}
 }
 
-if (isset($_GET['stats'])) {
-	$result = mysql_query('select count(row_id) from logs');
-	$row = mysql_fetch_row($result);
-	echo $row[0]. ' records received.';
+if (isset($_GET['env'])) {
+	print_r(getenv("VCAP_SERVICES"));
 }
 ?>
 <?php require('end.php') ?>

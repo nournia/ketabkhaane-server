@@ -8,6 +8,15 @@ CREATE TABLE libraries (
 	version varchar(10) null,
 	options text null
 );
+CREATE TABLE logs (
+	library_id integer not null,
+	table_name varchar(20) not null,
+	row_op enum("insert","update", "delete") not null,
+	row_id integer not null,
+	row_data text null,
+	user_id integer null references users(id) on update cascade,
+	created_at timestamp not null default current_timestamp
+);
 
 -- globals
 

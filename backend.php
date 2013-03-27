@@ -15,8 +15,10 @@
 	}
 	function getIds($values) {
 		$ids = array();
-		foreach($values as $value)
-			$ids[] = explode(',', $value)[1];
+		foreach($values as $value) {
+			$parts = explode(',', $value);
+			$ids[] = $parts[1];
+		}
 		return join(',', $ids);
 	}
 	function response($state, $data) {
