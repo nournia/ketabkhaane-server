@@ -95,7 +95,7 @@
 
 				$query = '';
 				if ($command == 'insert')
-					$query = "insert into $table values ". join(',', $values);
+					$query = "insert ignore into $table values ". join(',', $values);
 				else if ($command == 'delete')
 					$query = "delete from $table where id in (". getIds($values) .") and library_id = $library_id";
 				else

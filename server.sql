@@ -54,17 +54,23 @@ CREATE TABLE users (
 	email varchar(255) null default null,
 	upassword char(40) null default null,
 	label varchar(10) null default null,
-	account smallint not null
+	account smallint not null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE authors (
 	library_id integer not null,
 	id integer not null,
-	title varchar(255) not null
+	title varchar(255) not null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE publications (
 	library_id integer not null,
 	id integer not null,
-	title varchar(255) not null
+	title varchar(255) not null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE objects (
 	library_id integer not null,
@@ -75,7 +81,9 @@ CREATE TABLE objects (
 	title varchar(255) not null,
 	branch_id integer not null,
 	label varchar(50) not null,
-	cnt int not null default 0 -- count of object in this library
+	cnt int not null default 0, -- count of object in this library
+
+	primary key (library_id, id)
 );
 CREATE TABLE matches (
 	library_id integer not null,
@@ -85,35 +93,45 @@ CREATE TABLE matches (
 	ageclass tinyint(4) null default null,
 	object_id integer null default null,
 	category_id tinyint(4) null default null,
-	content text null default null
+	content text null default null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE questions (
 	library_id integer not null,
 	id integer not null,
 	match_id integer not null,
 	question varchar(1000) not null,
-	answer varchar(1000) null default null
+	answer varchar(1000) null default null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE files (
 	library_id integer not null,
 	id integer not null,
-	extension varchar(5) not null
+	extension varchar(5) not null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE roots (
 	library_id integer not null,
 	id integer not null,
 	title varchar(255) not null,
-	type_id smallint not null
+	type_id smallint not null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE branches (
 	library_id integer not null,
 	id integer not null,
 	root_id integer not null,
 	title varchar(255) not null,
-	label varchar(10) null default null
+	label varchar(10) null default null,
+
+	primary key (library_id, id)
 );
 
--- reghaabats
+-- events
 
 CREATE TABLE answers (
 	library_id integer not null,
@@ -123,7 +141,9 @@ CREATE TABLE answers (
 	delivered_at datetime not null,
 	received_at datetime null default null,
 	corrected_at datetime null default null,
-	rate float null default null
+	rate float null default null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE borrows (
 	library_id integer not null,
@@ -132,7 +152,9 @@ CREATE TABLE borrows (
 	object_id integer not null,
 	delivered_at datetime not null,
 	received_at datetime null default null,
-	renewed_at datetime null default null
+	renewed_at datetime null default null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE open_scores (
 	library_id integer not null,
@@ -140,14 +162,18 @@ CREATE TABLE open_scores (
 	user_id integer not null,
 	category_id tinyint(4) not null,
 	title varchar(255) not null,
-	score smallint(6) not null
+	score smallint(6) not null,
+
+	primary key (library_id, id)
 );
 CREATE TABLE permissions (
 	library_id integer not null,
 	id integer not null,
 	user_id integer not null,
 	permission enum("user", "operator", "designer", "manager", "master", "admin") not null,
-	accept tinyint(1) not null default "0"
+	accept tinyint(1) not null default 0,
+
+	primary key (library_id, id)
 );
 CREATE TABLE supports (
 	library_id integer not null,
@@ -155,7 +181,9 @@ CREATE TABLE supports (
 	match_id integer not null,
 	corrector_id integer not null,
 	current_state enum("active", "disabled", "imported") not null,
-	score smallint
+	score smallint,
+
+	primary key (library_id, id)
 );
 CREATE TABLE transactions (
 	library_id integer not null,
@@ -163,7 +191,9 @@ CREATE TABLE transactions (
 	user_id integer not null,
 	score smallint not null, -- match: +answer -payment, library: +receipt -fine +discount
 	created_at datetime not null,
-	description varchar(20) null -- fin: (fine of objects), dis (discount in fine), chg (money user charged to he's account), mid:match_id (score from match), pay (money payed to user for matches)
+	description varchar(20) null, -- fin: (fine of objects), dis (discount in fine), chg (money user charged to he's account), mid:match_id (score from match), pay (money payed to user for matches)
+
+	primary key (library_id, id)
 );
 
 -- data
