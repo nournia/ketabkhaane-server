@@ -82,8 +82,31 @@
 
 		// insert data into db in groups
 		$command = ''; $table = ''; $values = array();
-		foreach ($logs as $row) {
 
+		function storeData() {
+			global $command, $table, $values, $tables, $reghaabat_id;
+			if (count($values) > 0 && in_array($table, $tables)) {
+				// update = delete + insert
+				if ($command == 'update') {
+					if (!mysql_query("delete from $table where id in (". getIds($values) .") and reghaabat_id = $reghaabat_id"))
+						returnError(mysql_error());
+					$command = 'insert';
+				}
+
+				$query = '';
+				if ($command == 'insert')
+					$query = "insert into $table values ". join(',', $values);
+				else if ($command == 'delete')
+					$query = "delete from $table where id in (". getIds($values) .") and reghaabat_id = $reghaabat_id";
+				else
+					returnData('Invalid Db Command');
+
+				if (!mysql_query($query))
+					returnError(mysql_error());
+			}
+		}
+
+		foreach ($logs as $row) {
 			// store row before parsing it
 			fwrite($logFile, $row. "\n");
 
@@ -93,31 +116,14 @@
 			if ($table == $row[0] && $command == $row[1] && count($values) < 100)
 				$values[] = $value;
 			else {
-				if (count($values) > 0 && in_array($table, $tables)) {
-					// update = delete + insert
-					if ($command == 'update') {
-						if (!mysql_query("delete from $table where id in (". getIds($values) .") and reghaabat_id = $reghaabat_id"))
-							returnError(mysql_error());
-						$command = 'insert';
-					}
-
-					$query = '';
-					if ($command == 'insert')
-						$query = "insert into $table values ". join(',', $values);
-					else if ($command == 'delete')
-						$query = "delete from $table where id in (". getIds($values) .") and reghaabat_id = $reghaabat_id";
-					else
-						returnData('Invalid Db Command');
-
-					if (!mysql_query($query))
-						returnError(mysql_error());
-				}
+				storeData();
 
 				$command = $row[1];
 				$table = $row[0];
 				$values = array($value);
 			}
 		}
+		storeData();
 
 		// copy files into directory
 		if (count($_FILES) > 0) {
