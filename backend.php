@@ -77,11 +77,16 @@
 		if (count($logs) != $_POST['count'])
 			returnError($_POST['count'] .' rows was sent but '.  count($logs) .' was received');
 
-		// todo: write logs to file
+		// write logs to file
+		$logFile = fopen($logsDir . $reghaabat_id . '.log', 'a');
 
 		// insert data into db in groups
 		$command = ''; $table = ''; $values = array();
 		foreach ($logs as $row) {
+
+			// store row before parsing it
+			fwrite($logFile, $row. "\n");
+
 			$row = parseRow($row);
 			$value = "($reghaabat_id,{$row[2]},{$row[5]})";
 

@@ -21,4 +21,5 @@ if (empty($settings))
 
 connectDatabase($settings);
 $filesDir = 'files/';
+$logsDir = 'logs/';
 ?>
