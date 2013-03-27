@@ -45,8 +45,21 @@ if (isset($_GET['rebuild'])) {
 	}
 }
 
+if (isset($_GET['stats'])) {
+	foreach ($tables as $table) {
+		$value = 0;
+		$result = mysql_query("select count(id) from $table");
+		if ($result) {
+			$row = mysql_fetch_row($result);
+			$value = $row[0];
+		}
+		echo "<p>$table: $value</p>";
+	}
+}
+
 if (isset($_GET['env'])) {
 	print_r(getenv("VCAP_SERVICES"));
+
 }
 ?>
 <?php require('end.php') ?>
