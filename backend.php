@@ -36,7 +36,7 @@
 	if (!(isset($_POST['command']) && isset($_POST['id']) && isset($_POST['key']))) {
 		require('end.php'); die;		
 	}
-	$reghaabat_id = mysql_real_escape_string($_POST['id']);
+	$library_id = mysql_real_escape_string($_POST['id']);
 		
 	// authentication
 	if ($_POST['command'] == 'register') {
@@ -46,12 +46,12 @@
 		response('ok', array('id' => $id, 'license' => $license));
 	}
 	else  {
-		$result = mysql_query("select license from libraries where id = $reghaabat_id");
+		$result = mysql_query("select license from libraries where id = $library_id");
 		if ($result) {
 			$row = mysql_fetch_row($result);
 			$license = $row[0];
 
-			if(sha1($reghaabat_id .'|x|'. $license) == $_POST['key'])
+			if(sha1($library_id .'|x|'. $license) == $_POST['key'])
 				$valid_user = true;
 		}
 
@@ -62,7 +62,7 @@
 	// query data
 	if ($_POST['command'] == 'query') {
 		if ($_POST['query'] == 'synced_at') {
-			$row = mysql_fetch_row(mysql_query("select synced_at from libraries where id = $reghaabat_id"));
+			$row = mysql_fetch_row(mysql_query("select synced_at from libraries where id = $library_id"));
 			returnData(array('synced_at' => $row[0]));
 		}
 	}
@@ -78,17 +78,17 @@
 			returnError($_POST['count'] .' rows was sent but '.  count($logs) .' was received');
 
 		// write logs to file
-		$logFile = fopen($logsDir . $reghaabat_id . '.log', 'a');
+		$logFile = fopen($logsDir . $library_id . '.log', 'a');
 
 		// insert data into db in groups
 		$command = ''; $table = ''; $values = array();
 
 		function storeData() {
-			global $command, $table, $values, $tables, $reghaabat_id;
+			global $command, $table, $values, $tables, $library_id;
 			if (count($values) > 0 && in_array($table, $tables)) {
 				// update = delete + insert
 				if ($command == 'update') {
-					if (!mysql_query("delete from $table where id in (". getIds($values) .") and reghaabat_id = $reghaabat_id"))
+					if (!mysql_query("delete from $table where id in (". getIds($values) .") and library_id = $library_id"))
 						returnError(mysql_error());
 					$command = 'insert';
 				}
@@ -97,7 +97,7 @@
 				if ($command == 'insert')
 					$query = "insert into $table values ". join(',', $values);
 				else if ($command == 'delete')
-					$query = "delete from $table where id in (". getIds($values) .") and reghaabat_id = $reghaabat_id";
+					$query = "delete from $table where id in (". getIds($values) .") and library_id = $library_id";
 				else
 					returnData('Invalid Db Command');
 
@@ -111,7 +111,7 @@
 			fwrite($logFile, $row. "\n");
 
 			$row = parseRow($row);
-			$value = "($reghaabat_id,{$row[2]},{$row[5]})";
+			$value = "($library_id,{$row[2]},{$row[5]})";
 
 			if ($table == $row[0] && $command == $row[1] && count($values) < 100)
 				$values[] = $value;
@@ -128,12 +128,12 @@
 		// copy files into directory
 		if (count($_FILES) > 0) {
 			foreach ($_FILES as $file)
-				move_uploaded_file($file['tmp_name'], $filesDir . $reghaabat_id .'-'. $file['name']);
+				move_uploaded_file($file['tmp_name'], $filesDir . $library_id .'-'. $file['name']);
 		}
 
 		// update reghaabat synced_at
 		$synced_at = $_POST['synced_at'];
-		mysql_query("update libraries set synced_at = '$synced_at' where id = $reghaabat_id");
+		mysql_query("update libraries set synced_at = '$synced_at' where id = $library_id");
 		returnData(array('synced_at' => $synced_at, 'count' => count($logs)));
 	}
 
