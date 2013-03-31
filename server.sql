@@ -205,6 +205,11 @@ CREATE TABLE transactions (
 	primary key (library_id, id)
 );
 
+-- views
+
+CREATE VIEW _borrowed AS
+	select library_id, object_id, count(user_id) as cnt from borrows where received_at is null group by library_id, object_id;
+
 -- data
 
 INSERT INTO ageclasses values (0, 'الف', 'آمادگی و اول دبستان', 6, 7, 4), (1, 'ب', 'دوم و سوم دبستان', 8, 9, 4), (2, 'ج', 'چهارم و پنجم دبستان', 10, 11, 5), (3, 'د', 'راهنمایی', 12, 14, 6), (4, 'ه', 'دبیرستان', 15, 18, 7);

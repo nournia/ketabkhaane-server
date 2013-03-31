@@ -53,7 +53,7 @@ if (isset($_GET['stats'])) {
 			$row = mysql_fetch_row($result);
 			$value = $row[0];
 		}
-		echo "<p>$table: $value</p>";
+		echo "<li>$table: $value</li>";
 	}
 }
 
