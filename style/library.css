@@ -1,0 +1,21 @@
+.table {
+  font-size: 18px;
+}
+.table th,
+.table td {
+  text-align: right;
+}
+.form-search .input-prepend button {
+  height: 30px;
+  padding-top: 2px;
+}
+.form-search .input-prepend input,
+.form-search .input-prepend button {
+  font-size: 17px;
+}
+td.book {
+  background: url(images/book.png) no-repeat center center;
+}
+td.cd {
+  background: url(images/cd.png) no-repeat center center;
+}
