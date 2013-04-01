@@ -50,11 +50,22 @@ if (isset($_GET['stats'])) {
 		}
 		echo "<li>$table: $value</li>";
 	}
+
+	// files
+	if (file_exists($filesDir)) {
+		$handler = opendir($filesDir);
+		while ($file = readdir($handler))
+			echo $file .'<br>';
+		closedir($handler);
+	} else {
+		echo 'no files directory!' .'<br>';
+		echo $filesDir .'<br>';
+		echo mkdir($filesDir);
+	}
 }
 
 if (isset($_GET['env'])) {
 	print_r(getenv("VCAP_SERVICES"));
-
 }
 ?>
 <?php require('end.php') ?>
