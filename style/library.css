@@ -1,3 +1,33 @@
+.header {
+  margin: 20px 0;
+  height: 100px;
+}
+.header #logo {
+  height: 100px;
+  width: 100px;
+  float: right;
+  box-shadow: 0px 0px 8px;
+}
+.header h2 {
+  padding-top: 40px;
+  padding-right: 120px;
+}
+#object-browser {
+  display: none;
+}
+#loading {
+  background: url(images/loading.gif) no-repeat center right;
+  width: 180px;
+  margin: 0 auto;
+  padding: 5px 32px;
+}
+.branch {
+  display: inline-block;
+  margin-left: 30px;
+}
+.branch span {
+  margin-left: 2px;
+}
 .table {
   font-size: 18px;
 }

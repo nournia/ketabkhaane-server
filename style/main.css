@@ -1,4 +1,4 @@
-/* general */
+/* bootstrap */
 @font-face {
   font-family: BMitra;
   font-weight: normal;
@@ -9,7 +9,7 @@
   font-weight: bold;
   src: url('fonts/BMitraBold.eot?#') format('eot'), url('fonts/BMitraBold.woff') format('woff'), url('fonts/BMitraBold.ttf') format('truetype');
 }
-/* general */
+/* bootstrap */
 body,
 input,
 button,
@@ -41,6 +41,10 @@ li {
 }
 .container {
   width: 800px;
+}
+.tooltip {
+  font-size: 15px;
+  line-height: 15px;
 }
 body {
   direction: rtl;

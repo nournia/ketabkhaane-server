@@ -8,14 +8,16 @@ var Item = Backbone.Model.extend({
 var Items = Backbone.Collection.extend({
 	model: Item,
 
-	query: function(text) {
-		if (!text)
-			return this.first(20);
+	getRows: function(branch, query) {
+		if (!query)
+			return _(this.filter(function(item) {
+				return item.get('branch') == branch;
+			}));
 
 		return _(this.filter(function(item) {
-			return item.text().indexOf(text) >= 0;
-		})).first(20);
-	}
+			return item.text().indexOf(query) >= 0;
+		}));
+	},
 });
 
 var ItemView = Backbone.View.extend({
@@ -34,44 +36,68 @@ var ItemsView = Backbone.View.extend({
 		var that = this;
 		this.collection = new Items();
 		this.query = '';
+		this.branch = '';
 
 		$.ajax({
 			url: 'server/data.php',
 			dataType: 'json',
 			success: function(data){
-				_.each(data, function(item) {
-					item = {title: item[0], author: item[1], publication: item[2], type: item[3], state: item[4]};
+
+				// fill branch select
+				selector = $('#branch');
+				selector.empty();
+				_.each(data['branches'], function(item) {
+					selector.append('<option value="'+ item[0] +'">'+ item[1] +' - '+ item[2] +'</option>');
+				});
+
+				// fill items collection
+				_.each(data['objects'], function(item) {
+					item = {title: item[0], author: item[1], publication: item[2], type: item[3], branch: item[4], state: item[5]};
 					that.collection.add(item);
 				});
 
-				that.render();
+				// render
+				selector.val(111).change();
+				$('.alert').hide();
+				$('#object-browser').fadeIn();
 			},
 			error: function() {
 				console.log('Data Error');
 			}
 		});
 	},
-	setQuery: function(query) {
-		this.query = query;
-		this.render();
+	setFilters: function(branch, query) {
+		if (query.length < 3)
+			query = '';
+		if (branch != this.branch || query != this.query) {
+			this.branch = branch;
+			this.query = query;
+			this.render();
+		}
 	},
 	render: function() {
 		var tbody = this.$el.find('tbody');
 		tbody.empty();
 
-		_.each(this.collection.query(this.query), function (item) {
+		items = this.collection.getRows(this.branch, this.query).first(1000);
+		_.each(items, function (item) {
 			var itemView = new ItemView({model: item});
 			tbody.append(itemView.render().el);
 		});
+
+		tbody.find('tr.error').tooltip({placement: 'left', title: 'امانت داده شده'});
 	}
 });
 
 var AppView = Backbone.View.extend({
 	initialize: function() {
 		this.itemsView = new ItemsView();
-		$('#query').bind('keyup', function() {
-			app.itemsView.setQuery($(this).val());
-		});
+		function updateFilters() {
+			app.itemsView.setFilters($('#branch').val(), $('#query').val());
+		}
+
+		$('#query').keyup(updateFilters);
+		$('#branch').change(updateFilters);
 	}
 });
 
