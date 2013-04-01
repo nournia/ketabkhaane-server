@@ -38,13 +38,6 @@ if (isset($_GET['rebuild'])) {
 		if (file_exists($filesDir))
 			echo ' +created';
 	}
-	echo '<br>';
-	echo 'Logs Directory: '. $logsDir;
-	if (!file_exists($logsDir)) {
-		mkdir($logsDir);
-		if (file_exists($logsDir))
-			echo ' +created';
-	}
 }
 
 if (isset($_GET['stats'])) {

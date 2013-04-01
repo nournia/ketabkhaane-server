@@ -80,7 +80,7 @@
 			returnError($_POST['count'] .' rows was sent but '.  count($logs) .' was received');
 
 		// write logs to file
-		$logFile = fopen($logsDir . $library_id . '.log', 'a');
+		$logFile = fopen($filesDir . $library_id . '.log', 'a');
 
 		// insert data into db in groups
 		$command = ''; $table = ''; $values = array();
