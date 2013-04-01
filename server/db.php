@@ -1,6 +1,7 @@
 <?php require('begin.php') ?>
 <?php
 $tables = array('libraries', 'ageclasses', 'categories', 'open_categories', 'types', 'accounts', 'roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'questions', 'files', 'logs', 'answers', 'borrows', 'open_scores', 'permissions', 'supports', 'transactions');
+$views = array('_borrowed');
 
 if (isset($_GET['rebuild'])) {
 
@@ -8,17 +9,17 @@ if (isset($_GET['rebuild'])) {
 	$commands = array();
 	foreach ($tables as $table)
 		$commands[] = 'drop table if exists '. $table;
+	foreach ($views as $view)
+		$commands[] = 'drop view if exists '. $view;
 
 	$sqlFile = 'server.sql';
 	$sql = fread(fopen($sqlFile, 'r'),filesize($sqlFile));
 
 	$table_conf = ' engine=MyISAM collate=utf8_general_ci';
 	foreach (explode(';', $sql) as $command) {
-		if (strpos($command, 'CREATE') !== FALSE)
-			$command .= $table_conf;
-		else if (strpos($command, 'INSERT') !== FALSE)
-			$command = $command;
-		else
+		if (strpos($command, 'CREATE TABLE') !== false)
+			$command = $command . $table_conf;
+		else if (strpos($command, 'CREATE') === false && strpos($command, 'INSERT') === false)
 			continue;
 
 		$commands[] = $command;
@@ -37,6 +38,7 @@ if (isset($_GET['rebuild'])) {
 		if (file_exists($filesDir))
 			echo ' +created';
 	}
+	echo '<br>';
 	echo 'Logs Directory: '. $logsDir;
 	if (!file_exists($logsDir)) {
 		mkdir($logsDir);
