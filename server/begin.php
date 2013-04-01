@@ -20,6 +20,6 @@ if (empty($settings))
 	$settings = '{"mysql-5.1": [{"credentials": {"hostname": "localhost", "name": "reghaabat-db", "port": "3306", "username": "root", "password": ""}}]}';
 
 connectDatabase($settings);
-$filesDir = 'files/';
-$logsDir = 'logs/';
+$filesDir = '../../files/';
+$logsDir = '../../logs/';
 ?>
