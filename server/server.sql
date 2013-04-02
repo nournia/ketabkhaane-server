@@ -2,26 +2,24 @@ CREATE TABLE libraries (
 	id integer not null primary key auto_increment,
 	title varchar(255) not null,
 	description varchar(1000) null default null,
-	synced_at timestamp null default null,
-	license varchar(255) null default null,
+	started_at datetime not null,
 	image varchar(50) null default null,
 	version varchar(10) null,
+	synced_at timestamp null default null,
+	license varchar(255) null default null,
 	options text null
-);
-CREATE TABLE logs (
-	library_id integer not null,
-	table_name varchar(20) not null,
-	row_op enum("insert","update", "delete") not null,
-	row_id integer not null,
-	row_data text null,
-	user_id integer null references users(id) on update cascade,
-	created_at timestamp not null default current_timestamp
 );
 
 -- globals
 
+CREATE TABLE accounts (
+	id tinyint(4) not null primary key,
+	title varchar(255) not null,
+	bookfine integer not null, -- daily after one week
+	cdfine integer not null -- daily
+);
 CREATE TABLE ageclasses(
-	id tinyint(4) not null,
+	id tinyint(4) not null primary key,
 	title varchar(255) not null,
 	description varchar(255) null default null,
 	beginage tinyint(4) not null,
@@ -29,29 +27,33 @@ CREATE TABLE ageclasses(
 	questions tinyint(4) not null
 );
 CREATE TABLE categories (
-	id tinyint(4) not null,
+	id tinyint(4) not null primary key,
 	title varchar(255) not null
 );
 CREATE TABLE open_categories (
-	id integer not null,
+	id tinyint(4) not null primary key,
 	title varchar(255) not null
 );
 CREATE TABLE types (
-	id integer not null,
+	id tinyint(4) not null primary key,
 	title varchar(50) not null
-);
-CREATE TABLE accounts (
-	id integer not null,
-	title varchar(255) not null,
-	bookfine integer not null, -- daily after one week
-	cdfine integer not null -- daily
 );
 
 -- entities
 
+CREATE TABLE roots (
+	id integer not null primary key,
+	title varchar(255) not null,
+	type_id tinyint(4) not null
+);
+CREATE TABLE branches (
+	id integer not null primary key,
+	root_id integer not null,
+	title varchar(255) not null,
+	label varchar(10) null default null
+);
 CREATE TABLE users (
-	library_id integer not null,
-	id integer not null,
+	id integer not null primary key,
 	national_id integer null default null,
 	firstname varchar(255) not null,
 	lastname varchar(255) not null,
@@ -63,85 +65,54 @@ CREATE TABLE users (
 	email varchar(255) null default null,
 	upassword char(40) null default null,
 	label varchar(10) null default null,
-	account smallint not null,
-
-	primary key (library_id, id)
+	account tinyint(4) not null
 );
 CREATE TABLE authors (
-	library_id integer not null,
-	id integer not null,
-	title varchar(255) not null,
-
-	primary key (library_id, id)
+	id integer not null primary key,
+	title varchar(255) not null
 );
 CREATE TABLE publications (
-	library_id integer not null,
-	id integer not null,
-	title varchar(255) not null,
-
-	primary key (library_id, id)
+	id integer not null primary key,
+	title varchar(255) not null
 );
 CREATE TABLE objects (
-	library_id integer not null,
-	id integer not null,
+	id integer not null primary key,
 	author_id integer null default null,
 	publication_id integer null default null,
-	type_id smallint not null,
-	title varchar(255) not null,
-	branch_id integer not null,
-	label varchar(50) not null,
-	cnt int not null default 0, -- count of object in this library
-
-	primary key (library_id, id)
+	type_id tinyint(4) not null,
+	title varchar(255) not null
 );
 CREATE TABLE matches (
-	library_id integer not null,
-	id integer not null,
+	id integer not null primary key,
 	designer_id integer null default null,
 	title varchar(255) not null,
 	ageclass tinyint(4) null default null,
 	object_id integer null default null,
 	category_id tinyint(4) null default null,
-	content text null default null,
-
-	primary key (library_id, id)
+	content text null default null
 );
 CREATE TABLE questions (
-	library_id integer not null,
-	id integer not null,
+	id integer not null primary key,
 	match_id integer not null,
 	question varchar(1000) not null,
-	answer varchar(1000) null default null,
-
-	primary key (library_id, id)
+	answer varchar(1000) null default null
 );
 CREATE TABLE files (
-	library_id integer not null,
-	id integer not null,
-	extension varchar(5) not null,
-
-	primary key (library_id, id)
-);
-CREATE TABLE roots (
-	library_id integer not null,
-	id integer not null,
-	title varchar(255) not null,
-	type_id smallint not null,
-
-	primary key (library_id, id)
-);
-CREATE TABLE branches (
-	library_id integer not null,
-	id integer not null,
-	root_id integer not null,
-	title varchar(255) not null,
-	label varchar(10) null default null,
-
-	primary key (library_id, id)
+	id integer not null primary key,
+	extension varchar(5) not null
 );
 
 -- events
 
+CREATE TABLE logs (
+	library_id integer not null,
+	table_name varchar(20) not null,
+	row_op enum("insert","update", "delete") not null,
+	row_id integer not null,
+	row_data text null,
+	user_id integer null,
+	created_at timestamp not null default current_timestamp
+);
 CREATE TABLE answers (
 	library_id integer not null,
 	id integer not null,
@@ -171,7 +142,7 @@ CREATE TABLE open_scores (
 	user_id integer not null,
 	category_id tinyint(4) not null,
 	title varchar(255) not null,
-	score smallint(6) not null,
+	score smallint not null,
 
 	primary key (library_id, id)
 );
@@ -191,6 +162,16 @@ CREATE TABLE supports (
 	corrector_id integer not null,
 	current_state enum("active", "disabled", "imported") not null,
 	score smallint,
+
+	primary key (library_id, id)
+);
+CREATE TABLE belongs (
+	library_id integer not null,
+	id integer not null,
+	object_id integer not null,
+	branch_id integer not null,
+	label varchar(50) not null,
+	cnt int not null default 0, -- count of object in this library
 
 	primary key (library_id, id)
 );
