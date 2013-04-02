@@ -1,6 +1,7 @@
 <?php require('begin.php') ?>
 <?php
-	$tables = array('ageclasses', 'categories', 'open_categories', 'types', 'accounts', 'roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'questions', 'files', 'logs', 'answers', 'borrows', 'open_scores', 'permissions', 'supports', 'transactions');
+	$event_tables = array('answers', 'borrows', 'open_scores', 'permissions', 'supports', 'belongs', 'transactions');
+
 	function updateLicense($id) {
 		$days = 100;
 		mysql_query("update libraries set license = sha1(adddate(now(), $days)) where id = $id");
@@ -12,14 +13,6 @@
 		$values = explode(',', substr($data, 0, $content-1));
 		$values[] = substr($data, $content+1);
 		return $values;
-	}
-	function getIds($values) {
-		$ids = array();
-		foreach($values as $value) {
-			$parts = explode(',', $value);
-			$ids[] = $parts[1];
-		}
-		return join(',', $ids);
 	}
 	function response($state, $data) {
 		$data['command'] = $_POST['command'];
@@ -86,20 +79,18 @@
 		$command = ''; $table = ''; $values = array();
 
 		function storeData() {
-			global $command, $table, $values, $tables, $library_id;
-			if (count($values) > 0 && in_array($table, $tables)) {
-				// update = delete + insert
-				if ($command == 'update') {
-					if (!mysql_query("delete from $table where id in (". getIds($values) .") and library_id = $library_id"))
-						returnError(mysql_error());
-					$command = 'insert';
-				}
+			global $library_id, $command, $table, $values, $event_tables;
 
+			if (count($values) > 0) {
 				$query = '';
+				$values = join(',', $values);
+
 				if ($command == 'insert')
-					$query = "insert ignore into $table values ". join(',', $values);
+					$query = "insert ignore into $table values $values";
+				else if ($command == 'update')
+					$query = "replace into $table values $values";
 				else if ($command == 'delete')
-					$query = "delete from $table where id in (". getIds($values) .") and library_id = $library_id";
+					$query = "delete from $table where id in ($values)". (in_array($table, $event_tables) ? " and library_id = $library_id" : '');
 				else
 					returnData('Invalid Db Command');
 
@@ -113,7 +104,12 @@
 			fwrite($logFile, $row. "\n");
 
 			$row = parseRow($row);
-			$value = "($library_id,{$row[2]},{$row[5]})";
+			if ($command == 'delete')
+				$value = $row[2];
+			else if (in_array($table, $event_tables))
+				$value = "($library_id,{$row[2]},{$row[5]})";
+			else
+				$value = "({$row[2]},{$row[5]})";
 
 			if ($table == $row[0] && $command == $row[1] && count($values) < 100)
 				$values[] = $value;
