@@ -10,15 +10,21 @@
 	}
 
 	$library_id = 1;
-	$objects = getResults("select objects.title, authors.title as author, publications.title as publication, objects.type_id, objects.branch_id, objects.cnt - ifnull(_borrowed.cnt, 0) > 0 as cnt from objects
-		left join authors on objects.author_id = authors.id and objects.library_id = authors.library_id
-		left join publications on objects.publication_id = publications.id and objects.library_id = publications.library_id
-		left join _borrowed on objects.id = _borrowed.object_id and objects.library_id = _borrowed.library_id
-		where objects.library_id = $library_id");
+	$objects = getResults("
+		select objects.title, authors.title as author, publications.title as publication, objects.type_id, belongs.branch_id, belongs.cnt - ifnull(_borrowed.cnt, 0) > 0 as cnt from objects
+		inner join belongs on objects.id = belongs.object_id
+		left join authors on objects.author_id = authors.id
+		left join publications on objects.publication_id = publications.id
+		left join _borrowed on objects.id = _borrowed.object_id and belongs.library_id = _borrowed.library_id
+		where belongs.library_id = $library_id
+	");
 
-	$branches = getResults("select branches.id, roots.title, branches.title from branches
-		inner join roots on branches.root_id = roots.id and branches.library_id = roots.library_id
-		where branches.library_id = $library_id order by branches.id");
+	$branches = getResults("
+		select branches.id, roots.title, branches.title from branches
+		inner join (select distinct branch_id from belongs where library_id = $library_id) as _belongs on branches.id = _belongs.branch_id
+		inner join roots on branches.root_id = roots.id
+		order by branches.id
+	");
 
 	$data = array('branches' => $branches, 'objects' => $objects);
 	echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);

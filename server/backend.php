@@ -1,6 +1,7 @@
 <?php require('begin.php') ?>
 <?php
 	$event_tables = array('answers', 'borrows', 'open_scores', 'permissions', 'supports', 'belongs', 'transactions');
+	$entity_tables = array('roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'questions', 'files');
 
 	function updateLicense($id) {
 		$days = 100;
@@ -79,9 +80,9 @@
 		$command = ''; $table = ''; $values = array();
 
 		function storeData() {
-			global $library_id, $command, $table, $values, $event_tables;
+			global $library_id, $command, $table, $values, $event_tables, $entity_tables;
 
-			if (count($values) > 0) {
+			if (count($values) > 0 && (in_array($table, $event_tables) || in_array($table, $entity_tables))) {
 				$query = '';
 				$values = join(',', $values);
 
@@ -103,14 +104,16 @@
 			// store row before parsing it
 			fwrite($logFile, $row. "\n");
 
+			// set new value
 			$row = parseRow($row);
-			if ($command == 'delete')
+			if ($row[1] == 'delete')
 				$value = $row[2];
-			else if (in_array($table, $event_tables))
+			else if (in_array($row[0], $event_tables))
 				$value = "($library_id,{$row[2]},{$row[5]})";
 			else
 				$value = "({$row[2]},{$row[5]})";
 
+			// store values
 			if ($table == $row[0] && $command == $row[1] && count($values) < 100)
 				$values[] = $value;
 			else {
