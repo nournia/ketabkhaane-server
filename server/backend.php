@@ -129,7 +129,7 @@
 		// copy files into directory
 		if (count($_FILES) > 0) {
 			foreach ($_FILES as $file)
-				move_uploaded_file($file['tmp_name'], $filesDir . $library_id .'-'. $file['name']);
+				move_uploaded_file($file['tmp_name'], $filesDir . $file['name']);
 		}
 
 		// update reghaabat synced_at

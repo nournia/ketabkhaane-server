@@ -53,14 +53,29 @@ else if ($mode == 'matches' && $operation == 'list') {
 }
 else if ($mode == 'matches' && $operation == 'items') {
 	$items = arg('q');
-	$objects = array(); $authors = array(); $publications = array();
+	$objects = array(); $authors = array(); $publications = array(); $contents = array(); $files = array();
 
+	// matches and questions
 	$matches = getResults("select * from matches where id in ($items)");
-	foreach ($matches as $match)
-		if ($match[4]) $objects[] = $match[4];
-
 	$questions = getResults("select * from questions where match_id in ($items)");
 
+	foreach ($matches as $match) {
+		if ($match[4]) $objects[] = $match[4];
+		if ($match[6]) $contents[] = $match[6];
+	}
+
+	// files
+	foreach ($contents as $content) {
+		preg_match_all('/src="([^"]+)"/', $content, $cases);
+		foreach($cases[1] as $case) {
+			$filename = explode('.', $case);
+			$files[] = $filename[0];
+		}
+	}
+	if ($files)
+		$files = getResults('select * from files where id in ('. join(',', $files) .')');
+
+	// objects, authors and publications
 	if ($objects) {
 		$objects = getResults('select * from objects where id in ('. join(',', $objects) .')');
 		foreach ($objects as $object) {
@@ -75,5 +90,5 @@ else if ($mode == 'matches' && $operation == 'items') {
 			$publications = getResults('select * from publications where id in ('. join(',', $publications) .')');
 	}
 
-	response(array('matches' => $matches, 'questions' => $questions, 'objects' => $objects, 'authors' => $authors, 'publications' => $publications, 'operation' => $operation));
+	response(array('matches' => $matches, 'questions' => $questions, 'files' => $files, 'objects' => $objects, 'authors' => $authors, 'publications' => $publications, 'operation' => $operation));
 }

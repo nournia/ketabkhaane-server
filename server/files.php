@@ -1,5 +1,5 @@
 <?php 
-$filesDir = $_SERVER['DOCUMENT_ROOT'] .'../_files/';
+$filesDir = '../files/';
 if (isset($_GET['q'])) {
 	$filename = $filesDir . $_GET['q'];
 	if (file_exists($filename)) {
