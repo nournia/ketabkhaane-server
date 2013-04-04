@@ -39,7 +39,7 @@ var ItemsView = Backbone.View.extend({
 		this.branch = '';
 
 		$.ajax({
-			url: 'server/data.php',
+			url: 'server/data.php?m=objects&o=list&i=1',
 			dataType: 'json',
 			success: function(data){
 

@@ -1,15 +1,27 @@
 <?php ob_start('ob_gzhandler'); ?>
 <?php require('begin.php') ?>
 <?php
-	function getResults($query) {
-		$result = mysql_query($query);
-		$data = array();
+function getResults($query) {
+	$result = mysql_query($query);
+	$data = array();
+	if ($result)
 		while($row = mysql_fetch_row($result))
 			$data[] = $row;
-		return $data;
-	}
+	return $data;
+}
+function response($data) {
+	echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
+	require('end.php'); die;
+}
+function arg($name) {
+	if (!isset($_GET[$name]))
+		response(array('error' => 'Invalid Arguments'));
+	return $_GET[$name];
+}
 
-	$library_id = 1;
+$mode = arg('m'); $library_id = arg('i'); $operation = arg('o');
+
+if ($mode == 'objects' && $operation == 'list') {
 	$objects = getResults("
 		select objects.title, authors.title as author, publications.title as publication, objects.type_id, belongs.branch_id, belongs.cnt - ifnull(_borrowed.cnt, 0) > 0 as cnt from objects
 		inner join belongs on objects.id = belongs.object_id
@@ -26,7 +38,42 @@
 		order by branches.id
 	");
 
-	$data = array('branches' => $branches, 'objects' => $objects);
-	echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
-?>
-<?php require('end.php') ?>
+	response(array('branches' => $branches, 'objects' => $objects));
+}
+else if ($mode == 'matches' && $operation == 'list') {
+	$matches = getResults("
+		select matches.id, matches.title, ageclasses.title, ifnull(types.title, categories.title) as kind from matches
+		left join objects on matches.object_id = objects.id
+		left join types on objects.type_id = types.id
+		left join ageclasses on matches.ageclass = ageclasses.id
+		left join categories on matches.category_id = categories.id
+	");
+
+	response(array('matches' => $matches, 'operation' => $operation));
+}
+else if ($mode == 'matches' && $operation == 'items') {
+	$items = arg('q');
+	$objects = array(); $authors = array(); $publications = array();
+
+	$matches = getResults("select * from matches where id in ($items)");
+	foreach ($matches as $match)
+		if ($match[4]) $objects[] = $match[4];
+
+	$questions = getResults("select * from questions where match_id in ($items)");
+
+	if ($objects) {
+		$objects = getResults('select * from objects where id in ('. join(',', $objects) .')');
+		foreach ($objects as $object) {
+			if ($object[1]) $authors[] = $object[1];
+			if ($object[2]) $publications[] = $object[2];
+		}
+
+		if ($authors)
+			$authors = getResults('select * from authors where id in ('. join(',', $authors) .')');
+
+		if ($publications)
+			$publications = getResults('select * from publications where id in ('. join(',', $publications) .')');
+	}
+
+	response(array('matches' => $matches, 'questions' => $questions, 'objects' => $objects, 'authors' => $authors, 'publications' => $publications, 'operation' => $operation));
+}
