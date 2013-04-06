@@ -92,3 +92,11 @@ else if ($mode == 'matches' && $operation == 'items') {
 
 	response(array('matches' => $matches, 'questions' => $questions, 'files' => $files, 'objects' => $objects, 'authors' => $authors, 'publications' => $publications, 'operation' => $operation));
 }
+else if ($mode == 'users' && $operation == 'login') {
+	$nationalId = arg('i'); $password = arg('p');
+	$users = getResults("select * from users where national_id = $nationalId and upassword = '$password'");
+	if (count($users) == 1)
+		response(array('user' => $users, 'operation' => $operation));
+
+	response(array('user' => array(), 'operation' => $operation));
+}

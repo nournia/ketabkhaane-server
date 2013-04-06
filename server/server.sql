@@ -54,7 +54,7 @@ CREATE TABLE branches (
 );
 CREATE TABLE users (
 	id integer not null primary key,
-	national_id integer null default null,
+	national_id bigint null default null,
 	firstname varchar(255) not null,
 	lastname varchar(255) not null,
 	birth_date date null default null,
@@ -169,8 +169,8 @@ CREATE TABLE belongs (
 	library_id integer not null,
 	id integer not null,
 	object_id integer not null,
-	branch_id integer not null,
-	label varchar(50) not null,
+	branch_id integer null default null,
+	label varchar(50) null default null,
 	cnt int not null default 0, -- count of object in this library
 
 	primary key (library_id, id)
