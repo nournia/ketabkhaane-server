@@ -63,9 +63,7 @@ CREATE TABLE users (
 	gender enum("male","female") not null,
 	description varchar(255) null default null,
 	email varchar(255) null default null,
-	upassword char(40) null default null,
-	label varchar(10) null default null,
-	account tinyint(4) not null
+	upassword char(40) null default null
 );
 CREATE TABLE authors (
 	id integer not null primary key,
@@ -150,8 +148,9 @@ CREATE TABLE permissions (
 	library_id integer not null,
 	id integer not null,
 	user_id integer not null,
+	account_id tinyint(4) not null,
 	permission enum("user", "operator", "designer", "manager", "master", "admin") not null,
-	accept tinyint(1) not null default 0,
+	label varchar(10) null default null,
 
 	primary key (library_id, id)
 );
