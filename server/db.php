@@ -3,7 +3,8 @@
 $tables = array('libraries', 'ageclasses', 'categories', 'open_categories', 'types', 'accounts', 'roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'files', 'logs', 'answers', 'borrows', 'open_scores', 'permissions', 'supports', 'belongs', 'transactions');
 $views = array('_borrowed');
 
-if (isset($_GET['rebuild'])) {
+function rebuildDb() {
+	global $tables, $views, $filesDir;
 
 	// drop tables
 	$commands = array();
@@ -37,10 +38,17 @@ if (isset($_GET['rebuild'])) {
 		mkdir($filesDir);
 		if (file_exists($filesDir))
 			echo ' +created';
-	}
+	}	
 }
 
-if (isset($_GET['stats'])) {
+function dumpData() {
+	global $tables, $views, $filesDir;
+
+}
+
+function showStats() {
+	global $tables, $views, $filesDir;
+
 	foreach ($tables as $table) {
 		$value = 0;
 		$result = mysql_query("select count(id) from $table");
@@ -64,8 +72,34 @@ if (isset($_GET['stats'])) {
 	}
 }
 
-if (isset($_GET['env'])) {
-	print_r(getenv("VCAP_SERVICES"));
+if (isset($_POST['key']) && isset($_POST['operation'])) {
+	$auth = false;
+	$row = mysql_fetch_row(mysql_query('select upassword from users where id = 101139'));
+	if ($row)
+		$auth = sha1($_POST['key']) === $row[0];
+	else 
+		$auth = true;
+
+	if ($auth) {
+		if ($_POST['operation'] == 'stats')
+			showStats();
+		else	if ($_POST['operation'] == 'dump')
+			dumpData();
+		else	if ($_POST['operation'] == 'rebuild')
+			rebuildDb();
+	} else
+		echo '<p>Permission Denied!</p>';
 }
 ?>
+<form method="post">
+	<p>Key:
+		<input type="password" name="key" />
+	</p>
+	<p>Operation: 
+		<input type="radio" name="operation" value="stats"checked />Stats
+		<input type="radio" name="operation" value="dump" />Dump
+		<input type="radio" name="operation" value="rebuild" />Rebuild
+	</p>
+	<p><input type="submit" name="submit" value="Submit" /></p>
+</form>
 <?php require('end.php') ?>
