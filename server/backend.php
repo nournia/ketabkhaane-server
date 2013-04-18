@@ -1,7 +1,7 @@
 <?php require('begin.php') ?>
 <?php
 	$event_tables = array('answers', 'borrows', 'open_scores', 'permissions', 'supports', 'belongs', 'transactions');
-	$entity_tables = array('roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'questions', 'files');
+	$entity_tables = array('roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'files');
 
 	function updateLicense($id) {
 		$days = 100;

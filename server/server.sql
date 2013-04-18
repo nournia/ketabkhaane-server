@@ -89,12 +89,6 @@ CREATE TABLE matches (
 	category_id tinyint(4) null default null,
 	content text null default null
 );
-CREATE TABLE questions (
-	id integer not null primary key,
-	match_id integer not null,
-	question varchar(1000) not null,
-	answer varchar(1000) null default null
-);
 CREATE TABLE files (
 	id integer not null primary key,
 	extension varchar(5) not null

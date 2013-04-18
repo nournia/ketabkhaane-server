@@ -42,7 +42,7 @@ if ($mode == 'objects' && $operation == 'list') {
 }
 else if ($mode == 'matches' && $operation == 'list') {
 	$matches = getResults("
-		select matches.id, matches.title, ageclasses.title, ifnull(types.title, categories.title) as kind from matches
+		select matches.id, matches.title, ageclasses.title, ifnull(types.title, categories.title) as kind, if(matches.category_id is null, trim(left(matches.content, 5)), '-') as answers_ratio from matches
 		left join objects on matches.object_id = objects.id
 		left join types on objects.type_id = types.id
 		left join ageclasses on matches.ageclass = ageclasses.id
@@ -55,10 +55,8 @@ else if ($mode == 'matches' && $operation == 'items') {
 	$items = arg('q');
 	$objects = array(); $authors = array(); $publications = array(); $contents = array(); $files = array();
 
-	// matches and questions
+	// matches
 	$matches = getResults("select * from matches where id in ($items)");
-	$questions = getResults("select * from questions where match_id in ($items)");
-
 	foreach ($matches as $match) {
 		if ($match[4]) $objects[] = $match[4];
 		if ($match[6]) $contents[] = $match[6];
@@ -90,7 +88,7 @@ else if ($mode == 'matches' && $operation == 'items') {
 			$publications = getResults('select * from publications where id in ('. join(',', $publications) .')');
 	}
 
-	response(array('matches' => $matches, 'questions' => $questions, 'files' => $files, 'objects' => $objects, 'authors' => $authors, 'publications' => $publications, 'operation' => $operation));
+	response(array('matches' => $matches, 'files' => $files, 'objects' => $objects, 'authors' => $authors, 'publications' => $publications, 'operation' => $operation));
 }
 else if ($mode == 'users' && $operation == 'login') {
 	$nationalId = arg('i'); $password = arg('p');
