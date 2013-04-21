@@ -1,5 +1,9 @@
 <?php 
-$filesDir = '../files/';
+if (isset($_ENV['OPENSHIFT_DATA_DIR']))
+	$filesDir = $_ENV['OPENSHIFT_DATA_DIR'].'/files/';
+else 
+	$filesDir = '../../files/';
+
 if (isset($_GET['q'])) {
 	$filename = $filesDir . $_GET['q'];
 	if (file_exists($filename)) {
@@ -12,4 +16,3 @@ if (isset($_GET['q'])) {
 		exit;
 	}
 }
-?>

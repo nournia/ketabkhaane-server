@@ -1,1 +1,3 @@
-<?php disconnectDatabase(); ?>
+<?php
+if (isset($connection))
+	mysql_close($connection);

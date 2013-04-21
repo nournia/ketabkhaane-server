@@ -1,24 +1,30 @@
 <?php
-function connectDatabase($settings) {
-	$env = json_decode($settings, true);
-	$config = $env["mysql-5.1"][0]["credentials"];
 
-	$link = mysql_connect("{$config['hostname']}:{$config["port"]}", $config["username"], $config["password"]);
-	$db_selected = mysql_select_db($config["name"], $link);
-	if (! $db_selected) die("Db Connection Error.");
-}
-
-function disconnectDatabase() {
-	global $connection;
-	if (isset($connection))
-		mysql_close($connection);
+$db = 'reghaabat-db';
+if (isset($_ENV['OPENSHIFT_MYSQL_DB_HOST'])) {
+	$hostname = $_ENV['OPENSHIFT_MYSQL_DB_HOST'];
+	$port = $_ENV['OPENSHIFT_MYSQL_DB_PORT'];
+	$username = $_ENV['OPENSHIFT_MYSQL_DB_USERNAME'];
+	$password = $_ENV['OPENSHIFT_MYSQL_DB_PASSWORD'];
+} else {
+	$hostname = 'localhost';
+	$port = '3306';
+	$username = 'root';
+	$password = '';
 }
 
 // connect db
-$settings = getenv("VCAP_SERVICES");
-if (empty($settings))
-	$settings = '{"mysql-5.1": [{"credentials": {"hostname": "localhost", "name": "reghaabat-db", "port": "3306", "username": "root", "password": ""}}]}';
 
-connectDatabase($settings);
-$filesDir = '../files/';
-?>
+$connection = mysql_connect("$hostname:$port", $username, $password);
+$selected = mysql_select_db($db, $connection);
+if (! $selected) {
+	mysql_query("create database $db");
+	$selected = mysql_select_db($db, $connection);
+	if (! $selected)
+		die("Db Connection Error.");
+}
+
+if (isset($_ENV['OPENSHIFT_DATA_DIR']))
+	$filesDir = $_ENV['OPENSHIFT_DATA_DIR'].'/files/';
+else 
+	$filesDir = '../../files/';
