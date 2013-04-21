@@ -42,12 +42,24 @@ function rebuildDb() {
 }
 
 function dumpData() {
-	global $tables, $views, $filesDir;
+	global $filesDir;
 
+	$archive = 'files_'. date('Y-m-d') .'.zip';
+	$zip = new ZipArchive;
+	$zip->open($filesDir.$archive, ZipArchive::CREATE);
+	if (false === ($dir = opendir($filesDir)))
+		echo "Can't read $filesDir";
+	else
+		while (false !== ($file = readdir($dir)))
+			if ($file != '.' && $file != '..' && pathinfo($file, PATHINFO_EXTENSION) != 'zip')
+				$zip->addFile($filesDir.$file, $file);
+	$zip->close();
+
+	header("Location: files.php?q=$archive"); die();
 }
 
 function showStats() {
-	global $tables, $views, $filesDir;
+	global $tables, $filesDir;
 
 	foreach ($tables as $table) {
 		$value = 0;
