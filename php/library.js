@@ -32,14 +32,15 @@ var ItemView = Backbone.View.extend({
 var ItemsView = Backbone.View.extend({
 	el: $('#items'),
 
-	initialize: function() {
+	initialize: function(options) {
 		var that = this;
 		this.collection = new Items();
+		this.libraryId = options['libraryId'];
 		this.query = '';
 		this.branch = '';
 
 		$.ajax({
-			url: 'server/data.php?m=objects&o=list&i=1',
+			url: 'server/data.php?m=objects&o=list&i='+ this.libraryId,
 			dataType: 'json',
 			success: function(data){
 
@@ -87,20 +88,4 @@ var ItemsView = Backbone.View.extend({
 
 		tbody.find('tr.error').tooltip({placement: 'left', title: 'امانت داده شده'});
 	}
-});
-
-var AppView = Backbone.View.extend({
-	initialize: function() {
-		this.itemsView = new ItemsView();
-		function updateFilters() {
-			app.itemsView.setFilters($('#branch').val(), $('#query').val());
-		}
-
-		$('#query').keyup(updateFilters);
-		$('#branch').change(updateFilters);
-	}
-});
-
-$(document).ready(function() {
-	window.app = new AppView();
 });

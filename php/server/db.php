@@ -86,8 +86,8 @@ function showStats() {
 
 if (isset($_POST['key']) && isset($_POST['operation'])) {
 	$auth = false;
-	$row = mysql_fetch_row(mysql_query('select upassword from users where id = 101139'));
-	if ($row)
+	$result = mysql_query('select upassword from users where id = 101139');
+	if ($result && $row = mysql_fetch_row($result))
 		$auth = sha1($_POST['key']) === $row[0];
 	else 
 		$auth = true;

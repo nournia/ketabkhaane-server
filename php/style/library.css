@@ -15,11 +15,13 @@
 #object-browser {
   display: none;
 }
-#loading {
-  background: url(images/loading.gif) no-repeat center right;
+.alert {
   width: 180px;
   margin: 0 auto;
   padding: 5px 32px;
+}
+#loading {
+  background: url(images/loading.gif) no-repeat center right;
 }
 .branch {
   display: inline-block;
