@@ -1,6 +1,6 @@
 <?php
 
-$db = 'reghaabat-db';
+$db = 'reghaabat';
 if (isset($_ENV['OPENSHIFT_MYSQL_DB_HOST'])) {
 	$hostname = $_ENV['OPENSHIFT_MYSQL_DB_HOST'];
 	$port = $_ENV['OPENSHIFT_MYSQL_DB_PORT'];
@@ -17,12 +17,8 @@ if (isset($_ENV['OPENSHIFT_MYSQL_DB_HOST'])) {
 
 $connection = mysql_connect("$hostname:$port", $username, $password);
 $selected = mysql_select_db($db, $connection);
-if (! $selected) {
-	mysql_query("create database $db");
-	$selected = mysql_select_db($db, $connection);
-	if (! $selected)
-		die("Db Connection Error.");
-}
+if (! $selected)
+	die('Db Connection Error.');
 
 if (isset($_ENV['OPENSHIFT_DATA_DIR']))
 	$filesDir = $_ENV['OPENSHIFT_DATA_DIR'].'/files/';
