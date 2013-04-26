@@ -32,7 +32,7 @@ if ($mode == 'objects' && $operation == 'list') {
 	");
 
 	$branches = getResults("
-		select branches.id, roots.title, branches.title from branches
+		select branches.id, if(branches.title != '', concat(roots.title , ' - ', branches.title), roots.title) from branches
 		inner join (select distinct branch_id from belongs where library_id = $library_id) as _belongs on branches.id = _belongs.branch_id
 		inner join roots on branches.root_id = roots.id
 		order by branches.id

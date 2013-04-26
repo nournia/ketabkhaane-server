@@ -48,7 +48,7 @@ var ItemsView = Backbone.View.extend({
 				selector = $('#branch');
 				selector.empty();
 				_.each(data['branches'], function(item) {
-					selector.append('<option value="'+ item[0] +'">'+ item[1] +' - '+ item[2] +'</option>');
+					selector.append('<option value="'+ item[0] +'">'+ item[1] +'</option>');
 				});
 
 				// fill items collection
