@@ -1,9 +1,15 @@
-<?php 
-	if (isset($_GET['i'])) {
-		$id = mysql_real_escape_string($_GET['i']);
+<?php
+	$condition = '';
+	if (isset($_GET['i']))
+		$condition = 'id = '. mysql_real_escape_string($_GET['i']);
+	else {
+		$args = array_keys($_GET);
+		$condition = 'slug = "'. mysql_real_escape_string($args[0]) . '"';
+	}
 
+	if ($condition) {
 		require('server/begin.php');
-		$result = mysql_query("select id, title, image, synced_at from libraries where id = $id");
+		$result = mysql_query("select id, title, image, synced_at from libraries where $condition");
 		if ($result)
 			$data = mysql_fetch_row($result);
 		require('server/end.php');

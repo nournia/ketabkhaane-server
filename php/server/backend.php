@@ -106,6 +106,14 @@
 
 			// set new value
 			$row = parseRow($row);
+
+			if ($row[0] == 'library') {
+				$data = explode(',', str_replace('null', '""', $row[5]));
+				if (!mysql_query("update libraries set title = {$data[0]}, description = {$data[1]}, started_at = {$data[2]}, image = {$data[3]}, version = {$data[4]} where id = $library_id"))
+					returnError(mysql_error());
+				continue;
+			}
+
 			if ($row[1] == 'delete')
 				$value = $row[2];
 			else if (in_array($row[0], $event_tables))

@@ -7,7 +7,8 @@ CREATE TABLE libraries (
 	version varchar(10) null,
 	synced_at timestamp null default null,
 	license varchar(255) null default null,
-	options text null
+	options text null,
+	slug varchar(100) null default null
 );
 
 -- globals
@@ -174,7 +175,7 @@ CREATE TABLE transactions (
 	user_id integer not null,
 	score smallint not null, -- match: +answer -payment, library: +receipt -fine +discount
 	created_at datetime not null,
-	description varchar(20) null, -- fin: (fine of objects), dis (discount in fine), chg (money user charged to he's account), mid:match_id (score from match), pay (money payed to user for matches)
+	description varchar(20) null, -- fin: (fine of objects), dis (discount in fine), chg (money user charged to his account), mid:match_id (score from match), pay (money payed to user for matches)
 
 	primary key (library_id, id)
 );
