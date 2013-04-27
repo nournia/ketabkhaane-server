@@ -4,8 +4,7 @@
 	$entity_tables = array('roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'files');
 
 	function updateLicense($id) {
-		$days = 100;
-		mysql_query("update libraries set license = sha1(adddate(now(), $days)) where id = $id");
+		mysql_query("update libraries set license = sha1(if(slug is null, concat('x', id), concat('a', id))) where id = $id");
 		$row = mysql_fetch_row(mysql_query("select license from libraries where id = $id"));
 		return $row[0];
 	}
@@ -58,8 +57,15 @@
 	// query data
 	if ($_POST['command'] == 'query') {
 		if ($_POST['query'] == 'synced_at') {
-			$row = mysql_fetch_row(mysql_query("select synced_at from libraries where id = $library_id"));
-			returnData(array('synced_at' => $row[0]));
+			$row = mysql_fetch_row(mysql_query("select synced_at, slug from libraries where id = $library_id"));
+			if ($row[1] && $row[1][0] == '_') {
+				if (mysql_query("update libraries set slug = substr(slug, 2) where id = $library_id")) {
+					$license = updateLicense($library_id);
+					returnData(array('synced_at' => $row[0], 'license' => $license));
+				}
+			}
+			else
+				returnData(array('synced_at' => $row[0]));
 		}
 	}
 

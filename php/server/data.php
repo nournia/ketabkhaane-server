@@ -47,6 +47,7 @@ else if ($mode == 'matches' && $operation == 'list') {
 		left join types on objects.type_id = types.id
 		left join ageclasses on matches.ageclass = ageclasses.id
 		left join categories on matches.category_id = categories.id
+		where matches.id div 100000 != $library_id
 	");
 
 	response(array('matches' => $matches, 'operation' => $operation));
