@@ -1,4 +1,7 @@
-<?php ob_start('ob_gzhandler'); ?>
+<?php
+	header('Cache-Control: 3600');
+	ob_start('ob_gzhandler');
+?>
 <?php require('begin.php') ?>
 <?php
 function getResults($query) {

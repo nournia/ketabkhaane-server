@@ -12,6 +12,7 @@ if (isset($_GET['q'])) {
 			header('Content-Type: image/'.$ext);
 		header('Content-Disposition: attachment; filename='.$_GET['q']);
 		header('Content-Length: ' . filesize($filename));
+		header('Cache-Control: 3600');
 		readfile($filename);
 		exit;
 	}

@@ -21,9 +21,11 @@
   margin: 0 auto;
   padding: 5px 32px;
 }
+.alert p {
+  margin-bottom: 0;
+}
 #loading {
   background: url(images/loading.gif) no-repeat center right;
-  margin-bottom: 0;
   padding: 4px 32px 4px 0;
 }
 .branch {
