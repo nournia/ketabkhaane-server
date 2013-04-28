@@ -89,15 +89,15 @@ function manageLibraries() {
 	$result = mysql_query('
 		select libraries.id, libraries.slug, if(libraries.title != "", libraries.title, concat("توسط ", users.firstname, " ", users.lastname)) as title from libraries
 		inner join (select library_id, min(user_id) as master_id from permissions where permission = "master" group by library_id) as _t on libraries.id = _t.library_id
-		inner join users on master_id = users.id');
+		inner join users on master_id = users.id  order by libraries.slug desc');
 	
 	while($row = mysql_fetch_row($result))
 		echo "<form method='post'>
-				<input type='hidden' name='library_id' value='$row[0]'>
-				<input type='text' name='slug' placeholder='slug' value='$row[1]'>
+				<input type='hidden' name='library_id' value='{$row[0]}'>
+				<input type='text' name='slug' placeholder='slug' value='{$row[1]}'>
 				<input type='password' name='key' placeholder='key'>
 				<input type='submit' value='Update'>
-				<span>$row[2]</span>
+				<span>{$row[2]}</span>
 			</form>";
 }
 
