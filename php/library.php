@@ -1,13 +1,12 @@
+<?php require('server/begin.php') ?>
 <?php
 	$args = array_keys($_GET);
-	$slug = mysql_real_escape_string($args[0]);
-
-	if ($slug) {
-		require('server/begin.php');
-		$result = mysql_query("select id, title, image, synced_at from libraries where slug = '$slug'");
-		if ($result)
-			$data = mysql_fetch_row($result);
-		require('server/end.php');
+	if (isset($args[0])) {
+		$result = mysql_query("select id, title, image, synced_at from libraries where slug = '". mysql_real_escape_string($args[0]) ."'");
+		if ($result && $row = mysql_fetch_row($result))
+			$data = $row;
+		else
+			echo mysql_error();
 	}
 ?>
 <!DOCTYPE html>
@@ -73,3 +72,4 @@
 	</script>
 </body>
 </html>
+<?php require('server/end.php') ?>
