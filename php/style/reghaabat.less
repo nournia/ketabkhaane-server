@@ -1,5 +1,17 @@
 @import "mixins.less";
 
+.popover {
+	text-align: right;
+
+	.popover-title {
+		font-weight: bold;
+		font-size: 15px;
+	}
+	.popover-content {
+		text-align: justify;
+	}
+}
+
 h2 {
 	margin-bottom: 5px;
 }
@@ -88,11 +100,8 @@ table.figure {
 }
 
 .modal {
-	margin-top: -280px;
-	
 	h3 {
-		line-height: 18px;
-		margin-top: 2px;
+		font-size: 22px;
 	}
 	.modal-body {
 		min-height: 500px;

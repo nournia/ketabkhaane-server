@@ -5,8 +5,6 @@
 		$result = mysql_query("select id, title, image, synced_at from libraries where slug = '". mysql_real_escape_string($args[0]) ."'");
 		if ($result && $row = mysql_fetch_row($result))
 			$data = $row;
-		else
-			echo mysql_error();
 	}
 ?>
 <!DOCTYPE html>

@@ -21,7 +21,7 @@ var Items = Backbone.Collection.extend({
 });
 
 var ItemView = Backbone.View.extend({
-	template: _.template('<tr class="<%= state == 0 ? "error" : "" %>"><td class="<%= type == 0 ? "book" : "cd" %>"></td><td><%= title %></td><td><%= author %></td><td><%= publication %></td></tr>'),
+	template: _.template('<tr class="<%= state == 0 ? "warning" : "" %>"><td class="<%= type == 0 ? "book" : "cd" %>"></td><td><%= title %></td><td><%= author %></td><td><%= publication %></td></tr>'),
 	render: function () {
 		data = this.model.toJSON();
 		this.setElement(this.template(data));
@@ -80,12 +80,12 @@ var ItemsView = Backbone.View.extend({
 		var tbody = this.$el.find('tbody');
 		tbody.empty();
 
-		items = this.collection.getRows(this.branch, this.query).first(1000);
+		items = this.collection.getRows(this.branch, this.query).first(200);
 		_.each(items, function (item) {
 			var itemView = new ItemView({model: item});
 			tbody.append(itemView.render().el);
 		});
 
-		tbody.find('tr.error').tooltip({placement: 'left', title: 'امانت داده شده'});
+		tbody.find('tr.warning').tooltip({placement: 'left', title: 'امانت داده شده', container: 'body'});
 	}
 });

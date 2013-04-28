@@ -1,3 +1,13 @@
+.popover {
+  text-align: right;
+}
+.popover .popover-title {
+  font-weight: bold;
+  font-size: 15px;
+}
+.popover .popover-content {
+  text-align: justify;
+}
 h2 {
   margin-bottom: 5px;
 }
@@ -74,12 +84,8 @@ table.figure {
   margin-top: 20px;
   margin-left: 30px;
 }
-.modal {
-  margin-top: -280px;
-}
 .modal h3 {
-  line-height: 18px;
-  margin-top: 2px;
+  font-size: 22px;
 }
 .modal .modal-body {
   min-height: 500px;

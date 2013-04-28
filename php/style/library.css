@@ -17,12 +17,14 @@
   display: none;
 }
 .alert {
-  width: 180px;
+  width: 200px;
   margin: 0 auto;
   padding: 5px 32px;
 }
 #loading {
   background: url(images/loading.gif) no-repeat center right;
+  margin-bottom: 0;
+  padding: 4px 32px 4px 0;
 }
 .branch {
   display: inline-block;
@@ -46,10 +48,13 @@
 .form-search .input-prepend button {
   font-size: 17px;
 }
-td.book {
+tr {
+  cursor: default;
+}
+tr td.book {
   background: url(images/book.png) no-repeat center center;
 }
-td.cd {
+tr td.cd {
   background: url(images/cd.png) no-repeat center center;
 }
 /* libraries */

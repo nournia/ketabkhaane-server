@@ -22,7 +22,7 @@
 <div class="caption"><span>تاثیر مسابقه روی تعداد کتاب‌های برده‌شده از کتاب‌خونه</span></div>
 
 
-<table class="table figure pop" title="یعنی" data-content="در سال 1387 یه بچه <em>11 ساله</em> در یک تابستون، <em>65 تا کتاب</em> خونده و به عنوان جایزه <em>13000 تومن</em> پول گرفته! (بدون امتیاز خلاصه‌نویسی، نقاشی و ...)">
+<table class="table figure pop" title="یعنی" data-content="در سال 1387 یه بچه <em>11 ساله</em> در یک تابستون، <em>65 تا کتاب</em> خونده و به عنوان جایزه <em>13000 تومن</em> پول گرفته! (البته بدون امتیاز خلاصه‌نویسی، نقاشی و ...)">
 	<thead>
 		<tr><th>سال</th><th>سن</th><th>تعداد کتاب</th><th>امتیاز کتاب‌خوانی</th></tr>
 	</thead>
@@ -218,10 +218,10 @@
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript">
-	$('.pop').popover({placement: 'left'});
+	$('.pop').popover({placement: 'left', trigger: 'hover', html: true});
 	
 	$('a.thumbnail').click(function() {
-		width = 800; height: 500;
+		width = 800;
 		$('#viewer .modal-body img').attr('src', $(this).find('img').attr('src'));
 		$('#viewer .modal-header h3').text($(this).find('img').attr('alt'));
 		$('#viewer').modal().css({width: 'auto', 'margin-left': -(width / 2)});
