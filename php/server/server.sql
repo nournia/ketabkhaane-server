@@ -143,7 +143,7 @@ CREATE TABLE permissions (
 	library_id integer not null,
 	id integer not null,
 	user_id integer not null,
-	account_id tinyint(4) not null,
+	account_id tinyint(4) not null default 0,
 	permission enum("user", "operator", "designer", "manager", "master", "admin") not null,
 	label varchar(10) null default null,
 

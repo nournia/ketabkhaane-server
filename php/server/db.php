@@ -39,7 +39,12 @@ function rebuildDb() {
 		mkdir($filesDir);
 		if (file_exists($filesDir))
 			echo ' +created';
-	}	
+	} else {
+		// remove files in directory
+		foreach(glob($filesDir .'*') as $file)
+			if(is_file($file))
+				unlink($file);
+	}
 }
 
 function dumpData() {
