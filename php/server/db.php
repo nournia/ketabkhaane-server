@@ -1,3 +1,4 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>
 <?php require('begin.php') ?>
 <?php
 $tables = array('libraries', 'ageclasses', 'categories', 'open_categories', 'types', 'accounts', 'roots', 'branches', 'users', 'authors', 'publications', 'objects', 'matches', 'files', 'logs', 'answers', 'borrows', 'open_scores', 'permissions', 'supports', 'belongs', 'transactions');
@@ -84,34 +85,62 @@ function showStats() {
 	}
 }
 
-if (isset($_POST['key']) && isset($_POST['operation'])) {
-	$auth = false;
+function manageLibraries() {
+	$result = mysql_query('
+		select libraries.id, libraries.slug, if(libraries.title != "", libraries.title, concat("توسط ", users.firstname, " ", users.lastname)) as title from libraries
+		inner join (select library_id, min(user_id) as master_id from permissions where permission = "master" group by library_id) as _t on libraries.id = _t.library_id
+		inner join users on master_id = users.id');
+	
+	while($row = mysql_fetch_row($result))
+		echo "<form method='post'>
+				<input type='hidden' name='library_id' value='$row[0]'>
+				<input type='text' name='slug' placeholder='slug' value='$row[1]'>
+				<input type='password' name='key' placeholder='key'>
+				<input type='submit' value='Update'>
+				<span>$row[2]</span>
+			</form>";
+}
+
+function authenticate($key) {
 	$result = mysql_query('select upassword from users where id = 101139');
 	if ($result && $row = mysql_fetch_row($result))
-		$auth = sha1($_POST['key']) === $row[0];
-	else 
-		$auth = true;
-
-	if ($auth) {
-		if ($_POST['operation'] == 'stats')
-			showStats();
-		else	if ($_POST['operation'] == 'dump')
-			dumpData();
-		else	if ($_POST['operation'] == 'rebuild')
-			rebuildDb();
-	} else
-		echo '<p>Permission Denied!</p>';
+		return sha1($key) === $row[0];
+	return true;
 }
+
+if (isset($_POST['key'])) {
+	if (authenticate($_POST['key'])) {
+		if (isset($_POST['operation'])){
+			if ($_POST['operation'] == 'manage')
+				manageLibraries();
+			if ($_POST['operation'] == 'stats')
+				showStats();
+			else	if ($_POST['operation'] == 'dump')
+				dumpData();
+			else	if ($_POST['operation'] == 'rebuild')
+				rebuildDb();
+		} else if (isset($_POST['library_id']) && isset($_POST['slug'])) {
+			// update library slug
+			$library_id = mysql_real_escape_string($_POST['library_id']);
+			$slug = mysql_real_escape_string($_POST['slug']);
+			mysql_query("update libraries set slug='$slug' where id = $library_id");
+			manageLibraries();
+		}
+	} else 
+		echo '<p>Permission Denied!</p>';
+} else {
 ?>
 <form method="post">
 	<p>Key:
 		<input type="password" name="key" />
 	</p>
 	<p>Operation: 
-		<input type="radio" name="operation" value="stats"checked />Stats
+		<input type="radio" name="operation" value="manage" checked />Manage
+		<input type="radio" name="operation" value="stats" />Stats
 		<input type="radio" name="operation" value="dump" />Dump
 		<input type="radio" name="operation" value="rebuild" />Rebuild
 	</p>
 	<p><input type="submit" name="submit" value="Submit" /></p>
 </form>
+<?php } ?>
 <?php require('end.php') ?>
