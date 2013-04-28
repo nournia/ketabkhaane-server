@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
 	<meta charset="utf-8" />
-	<title>کتابخان‌ها</title>
+	<title>کتاب‌خانه‌ها</title>
 	<link href="style/bootstrap.css" rel="stylesheet">
 	<link href="style/main.css" rel="stylesheet">
 	<link href="style/library.css" rel="stylesheet">

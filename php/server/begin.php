@@ -1,4 +1,5 @@
 <?php
+require('config.php');
 
 $db = 'reghaabat';
 if (isset($_ENV['OPENSHIFT_MYSQL_DB_HOST'])) {
@@ -14,13 +15,7 @@ if (isset($_ENV['OPENSHIFT_MYSQL_DB_HOST'])) {
 }
 
 // connect db
-
 $connection = mysql_connect("$hostname:$port", $username, $password);
 $selected = mysql_select_db($db, $connection);
 if (! $selected)
 	die('Db Connection Error.');
-
-if (isset($_ENV['OPENSHIFT_DATA_DIR']))
-	$filesDir = $_ENV['OPENSHIFT_DATA_DIR'].'files/';
-else 
-	$filesDir = '../../files/';

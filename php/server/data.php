@@ -1,9 +1,9 @@
+<?php require('begin.php') ?>
 <?php
-	header('Cache-Control: max-age=3600');
-	header('Expires: '. gmdate('D, d M Y H:i:s', time() + 3600) .' GMT');
+	header('Cache-Control: max-age='. $cache);
+	header('Expires: '. gmdate('D, d M Y H:i:s', time() + $cache) .' GMT');
 	ob_start('ob_gzhandler');
 ?>
-<?php require('begin.php') ?>
 <?php
 function getResults($query) {
 	$result = mysql_query($query);
