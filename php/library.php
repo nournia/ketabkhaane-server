@@ -14,7 +14,6 @@
 	<title><?php echo isset($data) ? $data[1] : '' ?></title>
 	<link href="style/bootstrap.css" rel="stylesheet">
 	<link href="style/main.css" rel="stylesheet">
-	<link href="style/library.css" rel="stylesheet">
 </head>
 <body>
 	<div class="container">
