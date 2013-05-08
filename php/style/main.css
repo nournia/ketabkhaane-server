@@ -98,13 +98,13 @@ p.download {
 }
 .list img.tiny {
   float: right;
-  height: 50px;
+  height: 60px;
   margin-left: 12px;
   box-shadow: 0px 0px 5px #aaa;
 }
 .list .title {
   display: block;
-  padding-top: 6px;
+  padding-top: 10px;
 }
 .list .subtitle {
   display: block;

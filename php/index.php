@@ -29,7 +29,7 @@
 		<p>
 			<ul>
 				<li>طراحی سوال از روی کتاب‌ها</li>
-				<li><a href="http://reghaabat.ir">بیشتر بدانید.</a></li>
+				<li><a href="http://reghaabat.ir">بیشتر بدانید...</a></li>
 			</ul>
 		</p>
 	</div>
@@ -42,7 +42,7 @@
 <?php
 $result = mysql_query("select title, slug, image, _t.ids from libraries left join (select id div 100000 as library_id, count(id) as ids from users) as _t on libraries.id = _t.library_id where slug != '' and title != ''");
 while($row = mysql_fetch_row($result))
-	echo "<li class=''><img class='tiny' src='server/files.php?q={$row[2]}'><a class='title' href='{$row[1]}'>{$row[0]}</a><span class='subtitle'>اعضا: {$row[3]}</span></li>";
+	echo "<li class=''><img class='tiny' src='server/files.php?q={$row[2]}'><a class='title' href='{$row[1]}'>{$row[0]}</a><span class='subtitle'>{$row[3]} عضو</span></li>";
 ?>
 </ul></div>
 
