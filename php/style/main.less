@@ -26,6 +26,10 @@ p, li {
 	font-size: 16px;
 	line-height: 16px;	
 }
+.btn-large {
+	font-size: 20px;
+	line-height: 18px;
+}
 
 ul, ol {
 	padding-right: 20px;
@@ -53,7 +57,88 @@ body {
 	background: url(images/pattern.png);
 }
 
-/* library */
+.row [class*="span"] {
+	float: right;
+	margin-right: 20px;
+	margin-left: auto;
+}
+
+// footer
+html, body {
+	height: 100%;
+}
+
+.wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -60px;
+}
+
+.footer, .push {
+	height: 60px;
+}
+
+// main
+
+.hero-unit {
+	margin-top: 50px;
+	background-color: rgba(238, 238, 238, 0.5);
+	p {
+		color: #777;
+		margin-top: 5px;
+		font-size: 1.1em;
+	}
+}
+
+.span3 {
+	width: 240px;
+
+	img {
+		width: 100px;
+		height: 100px;
+	}
+}
+
+p.download {
+	margin: 20px 0 30px;
+	text-align: center;
+}
+
+.list {
+	ul {
+		list-style: none;
+	}
+
+	img.tiny {
+		float: right;
+		height: 50px;
+		margin-left: 12px;
+		box-shadow: 0px 0px 5px #aaa;
+	}
+
+	.title {
+		display: block;
+		padding-top: 6px;
+	}
+	.subtitle {
+		display: block;
+		color: #999;
+		margin-top: 4px;
+		font-size: .9em;
+	}
+}
+
+hr {
+	margin-bottom: 5px;
+}
+.copyright {
+	text-align: left;
+	color: #aaa;
+	font-size: 16px;
+}
+
+// library
 
 .header {
 	margin: 20px 0;
@@ -113,6 +198,7 @@ body {
 	}
 	input, button {
 		font-size: 17px;
+		height: 30px;
 	}
 }
 
@@ -124,18 +210,5 @@ tr {
 	}
 	td.cd {
 		background: url(images/cd.png) no-repeat center center;
-	}
-}
-
-/* libraries */
-.list {
-	ul {
-		list-style: none;
-	}
-
-	img.tiny {
-		height: 32px;
-		margin-left: 10px;
-		box-shadow: 0px 0px 5px #aaa;
 	}
 }
