@@ -1,57 +1,49 @@
-<!doctype html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>Laravel: A Framework For Web Artisans</title>
-	<meta name="viewport" content="width=device-width">
-	{{ HTML::style('laravel/css/style.css') }}
-</head>
-<body>
-	<div class="wrapper">
-		<header>
-			<h1>Laravel</h1>
-			<h2>A Framework For Web Artisans</h2>
+@section('content')
+<div class="hero-unit">
+	<h1>کتاب‌خانه</h1>
+	<p>برای مدیریت کتاب‌ها در مسجد، مدرسه یا محله‌ی شما</p>
+</div>
 
-			<p class="intro-text" style="margin-top: 45px;">
-			</p>
-		</header>
-		<div role="main" class="main">
-			<div class="home">
-				<h2>Learn the terrain.</h2>
-
-				<p>
-					You've landed yourself on our default home page. The route that
-					is generating this page lives at:
-				</p>
-
-				<pre>{{ path('app') }}routes.php</pre>
-
-				<p>And the view sitting before you can be found at:</p>
-
-				<pre>{{ path('app') }}views/home/index.blade.php</pre>
-
-				<h2>Grow in knowledge.</h2>
-
-				<p>
-					Learning to use Laravel is amazingly simple thanks to
-					its {{ HTML::link('docs', 'wonderful documentation') }}.
-				</p>
-
-				<h2>Create something beautiful.</h2>
-
-				<p>
-					Now that you're up and running, it's time to start creating!
-					Here are some links to help you get started:
-				</p>
-
-				<ul class="out-links">
-					<li><a href="http://laravel.com">Official Website</a></li>
-					<li><a href="http://forums.laravel.com">Laravel Forums</a></li>
-					<li><a href="http://github.com/laravel/laravel">GitHub Repository</a></li>
-				</ul>
-			</div>
-		</div>
+<div class="row">
+	<div class="span3">
+		<h3>کتاب‌داری</h3>
+		<p>
+			<ul>
+				<li>چاپ لیست‌ها و برچسب‌ها</li>
+				<li>محاسبه جریمه دیرکرد</li>
+			</ul>
+		</p>
 	</div>
-</body>
-</html>
+	<div class="span3">
+		<h3>سایت کتاب‌خانه</h3>
+		<p>
+			<ul>
+				<li>جستجو در کتاب‌ها</li>
+				<li>نمایش کتاب‌های امانت داده‌شده</li>
+			</ul>
+		</p>
+	</div>
+	<div class="span3">
+		<h3>رقابت سالم</h3>
+		<p>
+			<ul>
+				<li>طراحی سوال از روی کتاب‌ها</li>
+				<li><a href="http://reghaabat.ir">بیشتر بدانید...</a></li>
+			</ul>
+		</p>
+	</div>
+</div>
+
+<p class="download"><a id="download" class="btn btn-large btn-primary" href="http://bayanbox.ir/id/7186828025120521465?download">دریافت نرم‌افزار</a></p>
+
+<h3>کتاب‌خانه‌ها</h3>
+<div class="list">
+	<ul>
+	@foreach ($libraries as $library)
+		<li class=''><img class='tiny' src='files/{{ $library->image }}'><a class='title' href='{{ $library->slug }}'>{{ $library->title }}</a><span class='subtitle'>{{ $library->users }} عضو</span></li>
+	@endforeach
+	</ul>
+</div>
+@endsection
+
+@include('main')

@@ -69,13 +69,24 @@ return array(
 
 		'mysql' => array(
 			'driver'   => 'mysql',
+			'host'     => $_ENV['OPENSHIFT_MYSQL_DB_HOST'],
+			'port'     => $_ENV['OPENSHIFT_MYSQL_DB_PORT'],
+			'username' => $_ENV['OPENSHIFT_MYSQL_DB_USERNAME'],
+			'password' => $_ENV['OPENSHIFT_MYSQL_DB_PASSWORD'],
+			'database' => 'reghaabat',
+			'charset'  => 'utf8',
+			'prefix'   => '',
+		),
+
+		/*'mysql' => array(
+			'driver'   => 'mysql',
 			'host'     => '127.0.0.1',
-			'database' => 'database',
+			'database' => 'reghaabat',
 			'username' => 'root',
 			'password' => '',
 			'charset'  => 'utf8',
 			'prefix'   => '',
-		),
+		),*/
 
 		'pgsql' => array(
 			'driver'   => 'pgsql',

@@ -1,41 +1,32 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Simply tell Laravel the HTTP verbs and URIs it should respond to. It is a
-| breeze to setup your application using Laravel's RESTful routing and it
-| is perfectly suited for building large applications and simple APIs.
-|
-| Let's respond to a simple GET request to http://example.com/hello:
-|
-|		Route::get('hello', function()
-|		{
-|			return 'Hello World!';
-|		});
-|
-| You can even respond to more than one URI:
-|
-|		Route::post(array('hello', 'world'), function()
-|		{
-|			return 'Hello World!';
-|		});
-|
-| It's easy to allow URI wildcards using (:num) or (:any):
-|
-|		Route::put('hello/(:any)', function($name)
-|		{
-|			return "Welcome, $name.";
-|		});
-|
-*/
-
+// home
 Route::get('/', function()
 {
-	return View::make('home.index');
+	$libraries = DB::query('select title, slug, image, _t.ids as users from libraries left join (select id div 100000 as library_id, count(id) as ids from users) as _t on libraries.id = _t.library_id where slug != "" and title != ""');
+	return View::make('home.index', array('libraries' => $libraries));
 });
+
+// data
+Route::controller('data');
+Route::controller('backend');
+
+// files
+Route::get('/files/(:any)', function($file)
+{
+	return Response::download(path('storage') .'files/'.$file, $file);
+});
+
+// library
+Route::get('/(:any)', function($slug)
+{
+	$library = DB::query('select id, title, image, synced_at from libraries where slug = ?', array($slug));
+	if ($library)
+		return View::make('library.index', array('library' => $library[0]));
+	else
+		return Response::error('404');
+});
+
 
 /*
 |--------------------------------------------------------------------------
