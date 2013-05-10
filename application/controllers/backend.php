@@ -49,7 +49,7 @@ class Backend_Controller extends Base_Controller {
 			if ($row[0]->slug && $row[0]->slug[0] == '_') {
 				DB::query('update libraries set slug = substr(slug, 2) where id = ?', array($library_id));
 				$license = updateLicense($library_id);
-				return returnData(array('synced_at' => $row[0], 'license' => $license));
+				return returnData(array('synced_at' => $row[0]->synced_at, 'license' => $license));
 			}
 			else
 				return returnData(array('synced_at' => $row[0]->synced_at));

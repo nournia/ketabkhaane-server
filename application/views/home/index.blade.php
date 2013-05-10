@@ -34,7 +34,7 @@
 	</div>
 </div>
 
-<p class="download"><a id="download" class="btn btn-large btn-primary" href="http://bayanbox.ir/id/7186828025120521465?download">دریافت نرم‌افزار</a></p>
+<p class="download"><a id="download" class="btn btn-large btn-primary" href="http://bayanbox.ir/id/3919373541372850975?download">دریافت نرم‌افزار</a></p>
 
 <h3>کتاب‌خانه‌ها</h3>
 <div class="list">
