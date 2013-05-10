@@ -15,7 +15,9 @@ Route::controller('backend');
 // files
 Route::get('/files/(:any)', function($file)
 {
-	return Response::download(path('storage') .'files/'.$file, $file);
+	if (File::extension($file) != 'log')
+		return Response::download(path('storage') .'files/'.$file, $file);
+	return Response::error('404');
 });
 
 // library
@@ -24,8 +26,7 @@ Route::get('/(:any)', function($slug)
 	$library = DB::query('select id, title, image, synced_at from libraries where slug = ?', array($slug));
 	if ($library)
 		return View::make('library.index', array('library' => $library[0]));
-	else
-		return Response::error('404');
+	return Response::error('404');
 });
 
 

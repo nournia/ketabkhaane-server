@@ -37,16 +37,16 @@ class Admin_Controller extends Base_Controller {
 			$filesDir = path('storage') .'files/';
 			$archive = 'files_'. date('Y-m-d') .'.zip';
 			$zip = new ZipArchive;
-			$zip->open($filesDir.$archive, ZipArchive::CREATE);
+			$zip->open(path('storage') .$archive, ZipArchive::CREATE);
 			if (false === ($dir = opendir($filesDir)))
 				echo "Can't read $filesDir";
 			else
 				while (false !== ($file = readdir($dir)))
-					if ($file != '.' && $file != '..' && File::extension($file) != 'zip')
+					if ($file != '.' && $file != '..')
 						$zip->addFile($filesDir.$file, $file);
 			$zip->close();
 
-			return Redirect::to('/files/'. $archive);
+			return Response::download(path('storage') .$archive, $archive);
 		}
 
 		return View::make('admin.index');
