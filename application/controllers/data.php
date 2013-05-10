@@ -8,44 +8,48 @@ function getResults($results) {
 }
 
 function response($data) {
-	return Response::json($data, 200, array(), 256); // JSON_UNESCAPED_UNICODE
+	return Response::json($data); // JSON_UNESCAPED_UNICODE
 }
 
 class Data_Controller extends Base_Controller {
 
 	public function action_object_list($library_id)
 	{
-		$objects = getResults(DB::query('
-			select objects.title, authors.title as author, publications.title as publication, objects.type_id, belongs.branch_id, belongs.cnt - ifnull(_borrowed.cnt, 0) > 0 as cnt from objects
-			inner join belongs on objects.id = belongs.object_id
-			left join authors on objects.author_id = authors.id
-			left join publications on objects.publication_id = publications.id
-			left join _borrowed on objects.id = _borrowed.object_id and belongs.library_id = _borrowed.library_id
-			where belongs.library_id = ?
-		', array($library_id)));
+		return Cache::remember('object_list_'.$library_id, function() use($library_id) {
+			$objects = getResults(DB::query('
+				select objects.title, authors.title as author, publications.title as publication, objects.type_id, belongs.branch_id, belongs.cnt - ifnull(_borrowed.cnt, 0) > 0 as cnt from objects
+				inner join belongs on objects.id = belongs.object_id
+				left join authors on objects.author_id = authors.id
+				left join publications on objects.publication_id = publications.id
+				left join _borrowed on objects.id = _borrowed.object_id and belongs.library_id = _borrowed.library_id
+				where belongs.library_id = ?
+			', array($library_id)));
 
-		$branches = getResults(DB::query('
-			select branches.id, if(branches.title != "", concat(roots.title , " - ", branches.title), roots.title) as title from branches
-			inner join (select distinct branch_id from belongs where library_id = ?) as _belongs on branches.id = _belongs.branch_id
-			inner join roots on branches.root_id = roots.id
-			order by branches.id
-		', array($library_id)));
+			$branches = getResults(DB::query('
+				select branches.id, if(branches.title != "", concat(roots.title , " - ", branches.title), roots.title) as title from branches
+				inner join (select distinct branch_id from belongs where library_id = ?) as _belongs on branches.id = _belongs.branch_id
+				inner join roots on branches.root_id = roots.id
+				order by branches.id
+			', array($library_id)));
 
-		return response(array('branches' => $branches, 'objects' => $objects));
+			return response(array('branches' => $branches, 'objects' => $objects));
+		}, 3600);
 	}
 
 	public function action_match_list($library_id)
 	{
-		$matches = getResults(DB::query('
-			select matches.id, matches.title, ageclasses.title as ageclass, ifnull(types.title, categories.title) as kind, if(matches.category_id is null, trim(left(matches.content, 5)), "-") as answers_ratio from matches
-			left join objects on matches.object_id = objects.id
-			left join types on objects.type_id = types.id
-			left join ageclasses on matches.ageclass = ageclasses.id
-			left join categories on matches.category_id = categories.id
-			where matches.id div 100000 != ?
-		', array($library_id)));
+		return Cache::remember('match_list_'.$library_id, function() use($library_id) {
+			$matches = getResults(DB::query('
+				select matches.id, matches.title, ageclasses.title as ageclass, ifnull(types.title, categories.title) as kind, if(matches.category_id is null, trim(left(matches.content, 5)), "-") as answers_ratio from matches
+				left join objects on matches.object_id = objects.id
+				left join types on objects.type_id = types.id
+				left join ageclasses on matches.ageclass = ageclasses.id
+				left join categories on matches.category_id = categories.id
+				where matches.id div 100000 != ?
+			', array($library_id)));
 
-		return response(array('matches' => $matches, 'operation' => 'list'));
+			return response(array('matches' => $matches, 'operation' => 'list'));
+		}, 3600);
 	}
 
 	public function action_match_items($items) 
