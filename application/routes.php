@@ -9,6 +9,7 @@ Route::get('/', function()
 
 // data
 Route::controller('data');
+Route::controller('admin');
 Route::controller('backend');
 
 // files
