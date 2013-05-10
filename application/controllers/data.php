@@ -1,4 +1,5 @@
 <?php
+define('CACHE', 3600);
 
 function getResults($results) {
 	$data = array();
@@ -8,7 +9,8 @@ function getResults($results) {
 }
 
 function response($data) {
-	return Response::json($data); // JSON_UNESCAPED_UNICODE
+	$headers = array('Cache-Control' => 'max-age='. CACHE);
+	return Response::json($data, 200, $headers); // JSON_UNESCAPED_UNICODE
 }
 
 class Data_Controller extends Base_Controller {
@@ -33,7 +35,7 @@ class Data_Controller extends Base_Controller {
 			', array($library_id)));
 
 			return response(array('branches' => $branches, 'objects' => $objects));
-		}, 3600);
+		}, CACHE);
 	}
 
 	public function action_match_list($library_id)
@@ -49,7 +51,7 @@ class Data_Controller extends Base_Controller {
 			', array($library_id)));
 
 			return response(array('matches' => $matches, 'operation' => 'list'));
-		}, 3600);
+		}, CACHE);
 	}
 
 	public function action_match_items($items) 
