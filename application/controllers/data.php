@@ -8,7 +8,7 @@ function getResults($results) {
 }
 
 function response($data) {
-	return Response::json($data, 200, array(), JSON_UNESCAPED_UNICODE);
+	return Response::json($data, 200, array(), 256); // JSON_UNESCAPED_UNICODE
 }
 
 class Data_Controller extends Base_Controller {
