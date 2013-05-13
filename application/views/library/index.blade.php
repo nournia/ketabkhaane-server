@@ -1,6 +1,6 @@
 @section('content')
 <div class="header">
-	<img id="logo" src="files/{{ $library->image }}">
+	<img id="logo" src="{{ $library->image ? "files/". $library->image : "" }}">
 	<h2>{{ $library->title }}</h2>
 </div>
 

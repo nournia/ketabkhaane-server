@@ -37,12 +37,14 @@
 <p class="download"><a id="download" class="btn btn-large btn-primary" href="http://bayanbox.ir/id/3919373541372850975?download">دریافت نرم‌افزار</a></p>
 
 <h3>کتاب‌خانه‌ها</h3>
-<div class="list">
-	<ul>
+<div class="libraries row">
 	@foreach ($libraries as $library)
-		<li class=''><img class='tiny' src='files/{{ $library->image }}'><a class='title' href='{{ $library->slug }}'>{{ $library->title }}</a><span class='subtitle'>{{ $library->users }} عضو</span></li>
+		<div class='span5'>
+			<img class='tiny' src='{{ $library->image ? "files/". $library->image : "" }}'>
+			<p class='title'><a href='{{ $library->slug }}'>{{ $library->title }}</a></p>
+			<p class='subtitle'>{{ $library->books }} کتاب، {{ $library->users }} عضو</p>
+		</div>
 	@endforeach
-	</ul>
 </div>
 @endsection
 
