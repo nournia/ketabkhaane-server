@@ -7,8 +7,8 @@ Route::get('/', function()
 	$libraries = Cache::remember('libraries', function() {
 		return DB::query('
 			select title, slug, image, ifnull(_u.ids, 0) as users, ifnull(_o.ids, 0) as books from libraries
-			left join(select id div 100000 as library_id, count(id) as ids from users) as _u on libraries.id = _u.library_id
-			left join(select id div 100000 as library_id, count(id) as ids from objects where type_id = 0) as _o on libraries.id = _o.library_id
+			left join(select id div 100000 as library_id, count(id) as ids from users group by library_id) as _u on libraries.id = _u.library_id
+			left join(select id div 100000 as library_id, count(id) as ids from objects where type_id = 0 group by library_id) as _o on libraries.id = _o.library_id
 			where slug != "" and title != ""
 		');	
 	}, CACHE_SECONDS);
