@@ -51,4 +51,19 @@ class Admin_Controller extends Base_Controller {
 
 		return View::make('admin.index');
 	}
+
+	public function action_refresh()
+	{
+		if ($this->auth()) {
+			// remove caches
+			$caches = path('storage') .'cache/';
+			$dir = opendir($caches);
+			while (false !== ($file = readdir($dir)))
+				if ($file != '.' && $file != '..')
+					unlink($caches.$file);
+			return "Ok";
+		}
+
+		return View::make('admin.index');
+	}
 }
