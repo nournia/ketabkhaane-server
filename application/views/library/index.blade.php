@@ -14,7 +14,7 @@
 			<span>گروه: </span><select id="branch"></select>
 		</div>
 		<div class="title input-prepend">
-			<input id="query" type="text" class="search-query span2">
+			<input id="query" type="text" class="search-query input-medium">
 			<button class="btn">جستجو</button>
 		</div>
 	</div>
