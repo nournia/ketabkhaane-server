@@ -8,8 +8,7 @@ function getResults($results) {
 }
 
 function response($data) {
-	$headers = array('Cache-Control' => 'max-age='. CACHE_SECONDS);
-	return Response::json($data, 200, $headers); // JSON_UNESCAPED_UNICODE
+	return Response::json($data, 200, array('Cache-Control' => 'max-age='. CACHE_SECONDS)); // JSON_UNESCAPED_UNICODE
 }
 
 class Data_Controller extends Base_Controller {
@@ -35,6 +34,21 @@ class Data_Controller extends Base_Controller {
 
 			return response(array('branches' => $branches, 'objects' => $objects));
 		}, CACHE_SECONDS);
+	}
+
+	public function action_object_search($libraries, $query)
+	{
+		$objects = getResults(DB::query('
+			select objects.title, authors.title as author, publications.title as publication, objects.type_id, libraries.title as library, belongs.cnt - ifnull(_borrowed.cnt, 0) > 0 as cnt from objects
+			inner join belongs on objects.id = belongs.object_id
+			left join authors on objects.author_id = authors.id
+			left join publications on objects.publication_id = publications.id
+			left join _borrowed on objects.id = _borrowed.object_id and belongs.library_id = _borrowed.library_id
+			left join libraries on belongs.library_id = libraries.id
+			where belongs.library_id in (?) and (objects.title like "%'. urldecode($query) .'%") limit 10
+		', array(str_replace('-', ',', $libraries))));
+
+		return response(array('objects' => $objects));
 	}
 
 	public function action_match_list($library_id)

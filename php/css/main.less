@@ -105,13 +105,20 @@ p.download {
 	text-align: center;
 }
 
+img[src=""] {
+	background: url(../img/default.png);	
+}
+
 .libraries {
 	ul {
 		list-style: none;
 	}
 
+	& > div {
+		margin-bottom: 10px;
+	}
+
 	img.tiny {
-		background: url(../img/default.png);
 		float: right;
 		height: 60px;
 		width: 60px;
@@ -147,7 +154,6 @@ hr {
 	height: 100px;
 
 	#logo {
-		background: url(../img/default.png);
 		height: 100px;
 		width: 100px;
 		float: right;

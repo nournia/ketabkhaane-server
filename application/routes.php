@@ -25,7 +25,7 @@ Route::controller('backend');
 Route::get('/files/(:any)', function($file)
 {
 	if (File::extension($file) != 'log')
-		return Response::download(path('storage') .'files/'.$file, $file);
+		return Response::download(path('storage') .'files/'.$file, $file, array('Cache-Control' => 'max-age='. CACHE_SECONDS));
 	return Response::error('404');
 });
 
