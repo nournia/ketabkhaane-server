@@ -8,7 +8,8 @@ function getResults($results) {
 }
 
 function response($data) {
-	return Response::json($data, 200, array('Cache-Control' => 'max-age='. CACHE_SECONDS)); // JSON_UNESCAPED_UNICODE
+	$headers = array('Access-Control-Allow-Origin' => '*', 'Cache-Control' => 'max-age='. CACHE_SECONDS);
+	return Response::json($data, 200, $headers); // JSON_UNESCAPED_UNICODE
 }
 
 class Data_Controller extends Base_Controller {
