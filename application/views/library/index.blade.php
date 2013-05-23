@@ -4,8 +4,8 @@
 	<h2>{{ $library->title }}</h2>
 </div>
 
-<div class="alert">
-	<p id="loading">در حال دریافت فهرست کتاب‌ها</p>	
+<div class="alert loading">
+	<p>در حال دریافت فهرست کتاب‌ها</p>	
 </div>
 
 <div id="object-browser">
