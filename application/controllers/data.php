@@ -46,7 +46,7 @@ class Data_Controller extends Base_Controller {
 			left join publications on objects.publication_id = publications.id
 			left join _borrowed on objects.id = _borrowed.object_id and belongs.library_id = _borrowed.library_id
 			left join libraries on belongs.library_id = libraries.id
-			where belongs.library_id in ('. str_replace('-', ',', $libraries) .') and (objects.title like "%'. urldecode($query) .'%") limit 10
+			where belongs.library_id in ('. str_replace('-', ',', $libraries) .') and (objects.title like "%'. urldecode($query) .'%") limit 20
 		', array()));
 
 		return response(array('objects' => $objects));

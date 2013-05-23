@@ -1,0 +1,136 @@
+<html lang="fa">
+<head>
+	<meta charset="utf-8" />
+	<title>کتابخانه‌های دانشگاه علم و صنعت ایران</title>
+	<link href="http://www.ketabkhaane.ir/css/bootstrap.css" rel="stylesheet">
+	<link href="http://www.ketabkhaane.ir/css/main.css" rel="stylesheet">
+	<style type="text/css">
+		.container {
+			width: 860px;
+		}
+	
+		.row [class*="span"] {
+			margin-right: auto;
+		}
+
+		.logos img {
+			height: 100px;
+			width: 100px;
+			box-shadow: 0px 0px 5px #aaa;
+		}
+		.logos > div {
+			text-align: center;
+		}
+		.logos p {
+			text-align: center;
+			margin-top: 7px;
+		}
+		.results {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+<div class="wrap">
+	<div class="container">
+		<div class="hero-unit logos row">
+			<div class="span5">
+				<img src='http://www.ketabkhaane.ir/files/300001.JPG'>
+				<p class='title'><a href='http://www.ketabkhaane.ir/iust_computer'>دفتر فرهنگی دانشکده کامپیوتر</a></p>
+			</div>
+			<div class="span5">
+				<img src=''>
+				<p class='title'><a href="http://www.ketabkhaane.ir/iust_electrical">دفتر فرهنگی دانشکده برق</a></p>
+			</div>
+		</div>
+		<div class="well well-small form-search">
+			جستجو در کتاب‌ها:
+			<div class="title input-prepend">
+				<input id="query" type="text" class="search-query input-xlarge">
+				<button class="btn">جستجو</button>
+			</div>
+		</div>
+		<div class="results">
+			<table class="table table-striped">
+				<thead>
+					<tr><th style="width: 4%"></th><th>عنوان</th><th style="width: 20%">نویسنده</th><th style="width: 20%">ناشر</th><th style="width: 20%">کتابخانه</th></tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			<div class="alert loading">
+				<p>در حال دریافت داده‌ها</p>	
+			</div>
+		</div>
+
+<script type="text/javascript" src="http://www.ketabkhaane.ir/js/jquery.js"></script>
+<script type="text/javascript" src="http://www.ketabkhaane.ir/js/underscore.js"></script>
+<script type="text/javascript" src="http://www.ketabkhaane.ir/js/bootstrap.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+	libraries = '3-23';
+	template = _.template('<tr class="<%= state == 0 ? "warning" : "" %>"><td class="<%= type == 0 ? "book" : "cd" %>"></td><td><%= title %></td><td><%= author %></td><td><%= publication %></td><td><%= library %></td></tr>');
+
+	table = $('tbody');
+
+	function search() {
+
+		if (!$('#query').val()) {
+			$('.results').hide();
+			return;
+		}
+
+		$('.results').show();
+		$('.tooltip').remove();
+		$('.table').hide();
+		$('.alert p').text('در حال دریافت داده‌ها');
+		$('.alert').addClass('loading');
+		$('.alert').show();
+
+		$.ajax({
+			url: 'http://www.ketabkhaane.ir/data/object_search/'+ libraries +'/'+ $('#query').val(),
+			dataType: 'json',
+			success: function(data){
+				$('.table').show();
+				$('.alert').hide();
+
+				// load data
+				table.empty();
+				_.each(data['objects'], function(item) {
+					item = {title: item[0], author: item[1], publication: item[2], type: item[3], library: item[4], state: item[5]};
+					table.append(template(item));
+				});
+
+				if (data['objects'].length == 0) {
+					$('.tooltip').remove();
+					$('.table').hide();
+					$('.alert p').text('کتابی با این عنوان پیدا نشد.');
+					$('.alert').removeClass('loading');
+					$('.alert').show();
+				}
+
+				// warnings
+				table.find('tr.warning').tooltip({placement: 'left', title: 'امانت داده شده', container: 'body'});
+			},
+			error: function() {
+			}
+		});
+
+	}
+	$('#query').keyup(search);
+	$('.form-search button').click(search);
+});
+</script>
+
+	</div>
+	<div class="push"></div>
+</div>
+<div class="footer">
+	<div class="container">
+		<hr>
+		<div class="copyright">کاری از <a href="http://www.sobhe.ir/blog">سُبحه</a></div>
+	</div>
+</body>
+</html>
