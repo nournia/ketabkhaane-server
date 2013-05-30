@@ -47,7 +47,7 @@ class Data_Controller extends Base_Controller {
 				order by branches.id
 			', array($library_id)));
 
-			$objects = [];
+			$objects = array();
 			foreach (DB::query('select object_id, branch_id from belongs where library_id = ?', array($library_id)) as $object)
 				$objects[$object->object_id] = $object->branch_id;
 
