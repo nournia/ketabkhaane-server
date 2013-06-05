@@ -56,7 +56,7 @@ var ItemsView = Backbone.View.extend({
 
 				// fill items collection
 				_.each(data['objects'], function(item) {
-					item = {title: item[0], author: item[1], publication: item[2], type: item[3], branch: item[4], state: item[5]};
+					item = {title: item[0], author: item[1], publication: item[2], type: item[3], branch: Number(item[4]), state: item[5]};
 					that.collection.add(item);
 				});
 
