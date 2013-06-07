@@ -36,13 +36,44 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	window.itemsView = new ItemsView({libraryId: {{ $library->id }}});
-	
+	var libraryId = {{ $library->id }};
+
 	function updateFilters() {
 		itemsView.setFilters($('#branch').val(), $('#query').val());
 	}
 	$('#query').keyup(updateFilters);
 	$('#branch').change(updateFilters);
+
+	$.ajax({
+		url: 'data/object_list/'+ libraryId,
+		dataType: 'json',
+		success: function(data) {
+
+			// fill branch select
+			selector = $('#branch');
+			selector.empty();
+			selector.append('<option value="0">همه</option>');
+			_.each(data['branches'], function(item) {
+				selector.append('<option value="'+ item[0] +'">'+ item[1] +'</option>');
+			});
+
+			// fill items collection
+			items = [];
+			_.each(data['objects'], function(item) {
+				items.push({title: item[0], author: item[1], publication: item[2], type: item[3], branch: Number(item[4]), state: item[5]});
+			});
+			window.itemsView = new ItemsView(items);
+
+			// render
+			selector.val(0).change();
+			$('.alert').hide();
+			$('#object-browser').fadeIn();
+		},
+		error: function() {
+			$('.alert').removeClass('loading').addClass('alert-error');
+			$('.alert p').text('خطا در دریافت داده‌ها');
+		}
+	});
 });
 </script>
 @endsection

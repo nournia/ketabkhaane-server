@@ -9,7 +9,7 @@ function getResults($results) {
 
 function response($data) {
 	$headers = array('Access-Control-Allow-Origin' => '*', 'Cache-Control' => 'max-age='. CACHE_MINUTES*60);
-	return Response::json($data, 200, $headers); // JSON_UNESCAPED_UNICODE
+	return Response::json($data, 200, $headers, JSON_NUMERIC_CHECK); // JSON_UNESCAPED_UNICODE
 }
 
 class Data_Controller extends Base_Controller {
@@ -52,7 +52,7 @@ class Data_Controller extends Base_Controller {
 				$objects[$object->object_id] = $object->branch_id;
 
 			$dates = array();
-			foreach (DB::query('select object_id, date(delivered_at) as delivered from borrows where library_id = ? and delivered_at >= date_sub(now(), interval 10 year)', array($library_id)) as $item) {
+			foreach (DB::query('select object_id, date(delivered_at) as delivered from borrows where library_id = ?', array($library_id)) as $item) {
 				$delivered = $item->delivered;
 				if (empty($dates[$delivered]))
 					$dates[$delivered] = array();

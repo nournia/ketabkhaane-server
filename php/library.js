@@ -33,42 +33,13 @@ var ItemView = Backbone.View.extend({
 var ItemsView = Backbone.View.extend({
 	el: $('#items'),
 
-	initialize: function(options) {
+	initialize: function(data) {
 		var that = this;
 		this.collection = new Items();
-		this.libraryId = options['libraryId'];
+		this.collection.add(data);
 		this.query = '';
 		this.branch = '';
 		this.show = 100;
-
-		$.ajax({
-			url: 'data/object_list/'+ this.libraryId,
-			dataType: 'json',
-			success: function(data){
-
-				// fill branch select
-				selector = $('#branch');
-				selector.empty();
-				selector.append('<option value="0">همه</option>');
-				_.each(data['branches'], function(item) {
-					selector.append('<option value="'+ item[0] +'">'+ item[1] +'</option>');
-				});
-
-				// fill items collection
-				_.each(data['objects'], function(item) {
-					item = {title: item[0], author: item[1], publication: item[2], type: item[3], branch: Number(item[4]), state: item[5]};
-					that.collection.add(item);
-				});
-
-				// render
-				selector.val(0).change();
-				$('.alert').hide();
-				$('#object-browser').fadeIn();
-			},
-			error: function() {
-				console.log('Data Error');
-			}
-		});
 	},
 	setFilters: function(branch, query) {
 		if (query.length < 3)
