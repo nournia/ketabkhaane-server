@@ -8,7 +8,7 @@ function getResults($results) {
 }
 
 function response($data) {
-	$headers = array('Access-Control-Allow-Origin' => '*', 'Cache-Control' => 'max-age='. CACHE_SECONDS);
+	$headers = array('Access-Control-Allow-Origin' => '*', 'Cache-Control' => 'max-age='. CACHE_MINUTES*60);
 	return Response::json($data, 200, $headers); // JSON_UNESCAPED_UNICODE
 }
 
@@ -34,7 +34,7 @@ class Data_Controller extends Base_Controller {
 			', array($library_id)));
 
 			return response(array('branches' => $branches, 'objects' => $objects));
-		}, CACHE_SECONDS);
+		}, CACHE_MINUTES);
 	}
 
 	public function action_branch_stats($library_id)
@@ -61,7 +61,7 @@ class Data_Controller extends Base_Controller {
 			}
 
 			return response(array('dates' => $dates, 'branches' => $branches));
-		}, CACHE_SECONDS);
+		}, CACHE_MINUTES);
 	}
 
 	public function action_object_search($libraries, $query)
@@ -92,7 +92,7 @@ class Data_Controller extends Base_Controller {
 			', array($library_id)));
 
 			return response(array('matches' => $matches, 'operation' => 'list'));
-		}, CACHE_SECONDS);
+		}, CACHE_MINUTES);
 	}
 
 	public function action_match_items($items) 

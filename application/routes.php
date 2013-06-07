@@ -1,5 +1,5 @@
 <?php
-define('CACHE_SECONDS', 3600);
+define('CACHE_MINUTES', 60);
 
 // home
 Route::get('/', function()
@@ -11,7 +11,7 @@ Route::get('/', function()
 			left join(select id div 100000 as library_id, count(id) as ids from objects where type_id = 0 group by library_id) as _o on libraries.id = _o.library_id
 			where slug != "" and title != ""
 		');	
-	}, CACHE_SECONDS);
+	}, CACHE_MINUTES);
 
 	return View::make('home.index', array('libraries' => $libraries));
 });
@@ -25,7 +25,7 @@ Route::controller('backend');
 Route::get('/files/(:any)', function($file)
 {
 	if (File::extension($file) != 'log')
-		return Response::download(path('storage') .'files/'.$file, $file, array('Cache-Control' => 'max-age='. CACHE_SECONDS));
+		return Response::download(path('storage') .'files/'.$file, $file, array('Cache-Control' => 'max-age='. CACHE_MINUTES*60));
 	return Response::error('404');
 });
 
