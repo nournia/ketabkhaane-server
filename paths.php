@@ -23,7 +23,7 @@
 
 $environments = array(
 
-	'local' => array('http://localhost*', '*.dev'),
+	'local' => array('http://127.0.0.1/*', '*.dev'),
 
 );
 
@@ -45,7 +45,7 @@ $paths['bundle'] = 'bundles';
 // --------------------------------------------------------------
 // The path to the storage directory.
 // --------------------------------------------------------------
-$paths['storage'] = $_ENV['OPENSHIFT_DATA_DIR'];
+$paths['storage'] = isset($_ENV['OPENSHIFT_DATA_DIR']) ? ($_ENV['OPENSHIFT_DATA_DIR']) : 'storage';
 
 // --------------------------------------------------------------
 // The path to the public directory.
