@@ -16,6 +16,12 @@ Route::get('/', function()
 	return View::make('home.index', array('libraries' => $libraries));
 });
 
+Route::get('/guide', function()
+{
+	return View::make('home.guide');
+});
+
+
 // data
 Route::controller('data');
 Route::controller('admin');

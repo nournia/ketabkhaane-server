@@ -7,9 +7,7 @@
 </head>
 <body>
 <div class="wrap">
-	<div class="container">
-		@yield('content')
-	</div>
+	@yield('content')
 	<div class="push"></div>
 </div>
 <div class="footer">

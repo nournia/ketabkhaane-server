@@ -1,4 +1,5 @@
 @section('content')
+<div class="container">
 <div class="header">
 	<img id="logo" src="{{ $library->image ? "files/". $library->image : "" }}">
 	<h2>{{ $library->title }}</h2>
@@ -27,6 +28,7 @@
 		</table>
 	</div>
 </div>
+</div>
 
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/underscore.js"></script>
@@ -44,6 +46,7 @@ $(document).ready(function() {
 	$('#query').keyup(updateFilters);
 	$('#branch').change(updateFilters);
 
+	// Object List
 	$.ajax({
 		url: 'data/object_list/'+ libraryId,
 		dataType: 'json',
@@ -60,7 +63,7 @@ $(document).ready(function() {
 			// fill items collection
 			items = [];
 			_.each(data['objects'], function(item) {
-				items.push({title: item[0], author: item[1], publication: item[2], type: item[3], branch: Number(item[4]), state: item[5]});
+				items.push({title: item[0], author: item[1], publication: item[2], type: item[3], branch: item[4], state: item[5]});
 			});
 			window.itemsView = new ItemsView(items);
 

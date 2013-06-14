@@ -1,4 +1,5 @@
 @section('content')
+<div class="container">
 <div class="hero-unit">
 	<h1>کتابخانه</h1>
 	<p>برای مدیریت کتاب‌ها در مسجد، مدرسه یا محله شما</p>
@@ -47,6 +48,7 @@
 			<!-- <span class="users">{{ $library->users }} عضو</span> -->
 		</div>
 	@endforeach
+</div>
 </div>
 @endsection
 
