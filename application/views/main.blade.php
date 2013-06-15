@@ -4,6 +4,7 @@
 	<title>کتابخانه</title>
 	<link href="/css/bootstrap.css" rel="stylesheet">
 	<link href="/css/main.css" rel="stylesheet">
+	@yield('header')
 </head>
 <body>
 <div class="wrap">

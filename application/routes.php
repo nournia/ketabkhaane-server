@@ -20,6 +20,10 @@ Route::get('/guide', function()
 {
 	return View::make('home.guide');
 });
+Route::get('/guide-reghaabat', function()
+{
+	return View::make('home.guide-reghaabat');
+});
 
 
 // data
