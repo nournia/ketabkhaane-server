@@ -17,7 +17,7 @@ var Items = Backbone.Collection.extend({
 
 		return _(this.filter(function(item) {
 			return item.text().indexOf(query) >= 0;
-		}));
+		})).toArray();
 	},
 });
 
