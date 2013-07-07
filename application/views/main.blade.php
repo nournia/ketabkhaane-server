@@ -2,8 +2,8 @@
 <head>
 	<meta charset="utf-8" />
 	<title>کتابخانه</title>
-	<link href="css/bootstrap.css" rel="stylesheet">
-	<link href="css/main.css" rel="stylesheet">
+	<link href="/css/bootstrap.css" rel="stylesheet">
+	<link href="/css/main.css" rel="stylesheet">
 	@yield('header')
 </head>
 <body>
