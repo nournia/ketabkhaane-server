@@ -37,9 +37,9 @@ class Data_Controller extends Base_Controller {
 		}, CACHE_MINUTES);
 	}
 
-	public function action_branch_stats($library_id)
+	public function action_branch_stats($library_id, $years)
 	{
-		return Cache::remember('branch_stats_'.$library_id, function() use($library_id) {
+		return Cache::remember('branch_stats_'.$library_id.'_'.$years, function() use($library_id, $years) {
 			$branches = getResults(DB::query('
 				select branches.id, if(branches.title != "", concat(roots.title , " - ", branches.title), roots.title) as title from branches
 				inner join (select distinct branch_id from belongs where library_id = ?) as _belongs on branches.id = _belongs.branch_id
@@ -52,7 +52,7 @@ class Data_Controller extends Base_Controller {
 				$objects[$object->object_id] = $object->branch_id;
 
 			$dates = array();
-			foreach (DB::query('select object_id, date(delivered_at) as delivered from borrows where library_id = ?', array($library_id)) as $item) {
+			foreach (DB::query('select object_id, date(delivered_at) as delivered from borrows where library_id = ? and delivered_at >= date_sub(now(), interval ? year)', array($library_id, $years)) as $item) {
 				$delivered = $item->delivered;
 				if (empty($dates[$delivered]))
 					$dates[$delivered] = array();
