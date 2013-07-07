@@ -211,6 +211,10 @@
 			<img src="">
 		</div>
 	</div>
+
+	<script type="text/javascript">
+		mixpanel.track('Guide');
+	</script>
 @endsection
 
 @section('header')

@@ -211,11 +211,15 @@
 		</div>
 	</div>
 
-<div id="viewer" class="modal hide fade">
-	<div class="modal-body">
-		<img src="">
+	<div id="viewer" class="modal hide fade">
+		<div class="modal-body">
+			<img src="">
+		</div>
 	</div>
-</div>
+
+	<script type="text/javascript">
+		mixpanel.track('Guide Continue');
+	</script>
 @endsection
 
 @include('home.guide')

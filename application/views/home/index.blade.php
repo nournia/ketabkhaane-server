@@ -36,8 +36,8 @@
 </div>
 
 <p class="download">
-	<a id="download" class="btn btn-large btn-primary" href="http://bayanbox.ir/id/7042369005653032383">دریافت «کتابخانه»</a>
-	<a id="guide" class="btn btn-large" href="guide">آشنایی با «کتابخانه»</a>
+	<a id="download" class="btn btn-primary" href="http://bayanbox.ir/id/7042369005653032383">دریافت «کتابخانه»</a>
+	<a id="guide" class="btn" href="guide">آشنایی با «کتابخانه»</a>
 </p>
 <hr>
 
@@ -54,6 +54,9 @@
 	@endforeach
 </div>
 </div>
+<script type="text/javascript">
+	mixpanel.track('Ketabkhaane.ir');
+</script>
 @endsection
 
 @include('main')

@@ -6,7 +6,7 @@
 </div>
 
 <div class="alert loading">
-	<p>در حال دریافت فهرست کتاب‌ها</p>	
+	<p>در حال دریافت فهرست کتاب‌ها</p>
 </div>
 
 <div id="object-browser">
@@ -78,6 +78,8 @@ $(document).ready(function() {
 		}
 	});
 });
+
+mixpanel.track('Library', {library: "{{ $library->title }}"});
 </script>
 @endsection
 

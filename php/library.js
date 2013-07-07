@@ -64,7 +64,7 @@ var ItemsView = Backbone.View.extend({
 
 		this.$el.find('#continue').remove();
 		if (items.length > this.show) {
-			this.$el.append('<button id="continue" class="btn" rel="'+ this.show +'">ادامه فهرست</button>');
+			this.$el.append('<button id="continue" class="btn btn-small" rel="'+ this.show +'">ادامه فهرست</button>');
 			this.$el.find('#continue').click(function() {
 				itemsView.show = Number($(this).attr('rel')) + 100;
 				itemsView.render();
